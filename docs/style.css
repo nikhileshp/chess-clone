@@ -5,21 +5,39 @@
    ─────────────────────────────────────────────────────────── */
 
 :root {
-  --bg:           #ffffff;
-  --bg-soft:      #f6f6f4;
-  --fg:           #212529;
-  --fg-soft:      #4a4f55;
-  --fg-mute:      #828589;
-  --rule:         #e1e1de;
-  --accent:       #0076df;          /* deep blue — common al-folio alternate */
-  --accent-soft:  #5ba6ec;
-  --accent-tint:  #e3f0fa;
-  --green:        #2e7d32;
-  --warm:         #b3261e;
+  --bg:                 #ffffff;
+  --bg-soft:            #f6f6f4;
+  --bg-translucent:     rgba(255, 255, 255, 0.94);
+  --fg:                 #212529;
+  --fg-soft:            #4a4f55;
+  --fg-mute:            #828589;
+  --rule:               #e1e1de;
+  --accent:             #0076df;          /* deep blue (light mode) */
+  --accent-soft:        #5ba6ec;
+  --accent-tint:        #e3f0fa;
+  --on-accent:          #ffffff;          /* foreground when on top of accent */
+  --green:              #2e7d32;
+  --warm:               #b3261e;
+  --piece-color:        #c0c0bc;
 }
 
-/* If your main al-folio site uses a different accent (it may use
-   #B509AC default; some users override to blue), change --accent above. */
+/* Dark mode — orange accent, mirroring nikhileshp.github.io main-site dark mode */
+:root[data-theme='dark'] {
+  --bg:                 #2c4046;
+  --bg-soft:            #243339;
+  --bg-translucent:     rgba(44, 64, 70, 0.92);
+  --fg:                 #e8e8e8;
+  --fg-soft:            #c9cdd1;
+  --fg-mute:            #8d9499;
+  --rule:               #3d535a;
+  --accent:             #ffad41;          /* orange */
+  --accent-soft:        #ffd399;
+  --accent-tint:        rgba(255, 173, 65, 0.18);
+  --on-accent:          #1a1a1a;
+  --green:              #6cd56b;
+  --warm:               #ff7b6b;
+  --piece-color:        #5b6a70;
+}
 
 body {
   font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
@@ -47,7 +65,7 @@ a { color: var(--accent); text-decoration: none; transition: color 150ms ease; }
 a:hover { color: color-mix(in srgb, var(--accent) 70%, var(--fg)); text-decoration: underline; }
 
 /* ─── Navbar ─── */
-.navbar { background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); padding: 0.5rem 1rem; }
+.navbar { background: var(--bg-translucent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); padding: 0.5rem 1rem; }
 .navbar-brand.social { display: flex; gap: 0.6rem; }
 .navbar-brand.social a { color: var(--fg-soft); font-size: 1.1rem; padding: 0.2rem 0.4rem; }
 .navbar-brand.social a:hover { color: var(--accent); }
@@ -164,7 +182,7 @@ a:hover { color: color-mix(in srgb, var(--accent) 70%, var(--fg)); text-decorati
   gap: 0.9rem;
   margin-bottom: 1.3rem;
   font-size: 2.2rem;
-  color: #c0c0bc;
+  color: var(--piece-color);
 }
 .board-placeholder__pieces span { animation: floatPiece 4s ease-in-out infinite; }
 .board-placeholder__pieces span:nth-child(2) { animation-delay: 0.4s; }
@@ -201,10 +219,13 @@ a:hover { color: color-mix(in srgb, var(--accent) 70%, var(--fg)); text-decorati
   transition: background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
   box-shadow: 0 1px 0 0 rgba(0,0,0,0.04), 0 8px 18px -10px color-mix(in srgb, var(--accent) 55%, transparent);
 }
+.challenge-cta {
+  color: var(--on-accent);
+}
 .challenge-cta:hover, .challenge-cta:focus {
   background: color-mix(in srgb, var(--accent) 85%, var(--fg));
   border-color: color-mix(in srgb, var(--accent) 85%, var(--fg));
-  color: #fff;
+  color: var(--on-accent);
   transform: translateY(-1px);
   box-shadow: 0 1px 0 0 rgba(0,0,0,0.06), 0 12px 24px -10px color-mix(in srgb, var(--accent) 65%, transparent);
 }
@@ -330,7 +351,7 @@ a:hover { color: color-mix(in srgb, var(--accent) 70%, var(--fg)); text-decorati
   line-height: 1.6em;
   border-radius: 50%;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   text-align: center;
   font-family: "Roboto Slab", serif;
   font-weight: 400;
@@ -343,7 +364,7 @@ a:hover { color: color-mix(in srgb, var(--accent) 70%, var(--fg)); text-decorati
 footer.fixed-bottom {
   font-size: 0.8rem;
   color: var(--fg-mute);
-  background: rgba(255,255,255,0.94);
+  background: var(--bg-translucent);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   border-top: 1px solid var(--rule);
@@ -354,5 +375,30 @@ footer.fixed-bottom a { color: var(--fg-soft); border-bottom: 1px dotted var(--r
 footer.fixed-bottom a:hover { color: var(--accent); border-bottom-color: var(--accent); text-decoration: none; }
 
 /* ─── Selection / focus polish ─── */
-::selection { background: var(--accent); color: #fff; }
+::selection { background: var(--accent); color: var(--on-accent); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+
+/* ─── Theme toggle button ─── */
+#theme-toggle {
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--fg-soft);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.6rem;
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+#theme-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: rotate(20deg);
+}
+#theme-toggle .fa-sun { display: none; }
+#theme-toggle .fa-moon { display: inline-block; }
+:root[data-theme='dark'] #theme-toggle .fa-sun { display: inline-block; }
+:root[data-theme='dark'] #theme-toggle .fa-moon { display: none; }

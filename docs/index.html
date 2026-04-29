@@ -20,6 +20,18 @@
 <link rel="shortcut icon" href="https://nikhileshp.github.io/assets/img/np_logo.jpeg">
 <link rel="canonical" href="https://nikhileshp.github.io/chess-clone/">
 <link rel="stylesheet" href="style.css">
+<script>
+  // Inline + early to avoid theme flicker on first paint.
+  (function() {
+    var saved = localStorage.getItem('theme');
+    var theme = (saved === 'dark' || saved === 'light')
+      ? saved
+      : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
 </head>
 <body class="fixed-top-nav">
 
@@ -45,6 +57,12 @@
           <li class="nav-item"><a class="nav-link" href="https://nikhileshp.github.io/publications/">publications</a></li>
           <li class="nav-item"><a class="nav-link" href="https://nikhileshp.github.io/teaching/">teaching</a></li>
           <li class="nav-item active"><a class="nav-link" href="/chess-clone/">nick_p12_bot<span class="sr-only">(current)</span></a></li>
+          <li class="nav-item">
+            <button id="theme-toggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode">
+              <i class="fas fa-moon"></i>
+              <i class="fas fa-sun"></i>
+            </button>
+          </li>
         </ul>
       </div>
     </div>
