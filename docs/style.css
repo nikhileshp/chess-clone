@@ -236,10 +236,14 @@ a:hover { color: color-mix(in srgb, var(--accent) 70%, var(--fg)); text-decorati
   height: 100%;
   border: 0;
   display: block;
-  /* Transparent so the parent's --bg-soft shows through in dark mode
-     (lichess.js requests bg=transparent for the embed itself). */
-  background: transparent;
+  background: var(--bg);
 }
+
+/* Bridge color: between the page's --bg-soft (#243339) and Lichess's
+   bg=dark (~#161512) so the seam between page and iframe is gentler
+   and the whole card reads as part of the dark teal/grey palette. */
+:root[data-theme='dark'] .board-card__body { background: #1a2326; }
+:root[data-theme='dark'] .board-card__body iframe { background: #1a2326; }
 
 .board-placeholder {
   position: absolute; inset: 0;
