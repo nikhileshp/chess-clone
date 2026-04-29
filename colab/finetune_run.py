@@ -35,6 +35,29 @@ ALL_MOVES_DICT = {mv: i for i, mv in enumerate(get_all_possible_moves())}
 N_MOVES = len(ALL_MOVES_DICT)
 print(f"Action space: {N_MOVES} moves")
 
+
+def elo_to_bucket(elo: int) -> int:
+    """Match Maia2's `map_to_category` from maia2/utils.py.
+
+    11 buckets (indices 0..10):
+      0  <1100
+      1  1100-1199
+      ...
+      9  1900-1999
+      10 >=2000
+    """
+    if elo < 1100:
+        return 0
+    if elo >= 2000:
+        return 10
+    return ((elo - 1100) // 100) + 1
+
+
+# Sanity-check against the model's actual embedding size
+_n_buckets = m.elo_embedding.num_embeddings
+print(f"Model elo_embedding has {_n_buckets} buckets; our mapping produces 0..10.")
+assert _n_buckets == 11, f"Unexpected bucket count {_n_buckets}; bucketing may have changed upstream."
+
 USER = cfg.user.lower()
 
 
@@ -82,7 +105,9 @@ def parse_pgn_zst(path: str, max_games: int | None = None):
                 uci = move.uci()
                 if uci in ALL_MOVES_DICT:
                     aw = 1 if user_score == 1 else (0 if user_score == 0.5 else -1)
-                    samples.append((board.fen(), uci, elo_self, elo_oppo, aw))
+                    samples.append(
+                        (board.fen(), uci, elo_to_bucket(elo_self), elo_to_bucket(elo_oppo), aw)
+                    )
             board.push(move)
     return samples, n_games
 
