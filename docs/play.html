@@ -140,9 +140,16 @@
       <p class="text-muted small">
         Your moves run locally in your browser using <a href="https://github.com/jhlywa/chess.js" target="_blank" rel="noopener">chess.js</a>
         + <a href="https://chessboardjs.com/" target="_blank" rel="noopener">chessboard.js</a>.
-        The bot's reply is fetched from the same Maia2 model that runs the Lichess bot, hosted on
+        The bot's reply is fetched from the same <a href="https://github.com/CSSLab/maia2" target="_blank" rel="noopener">Maia 2</a> model that runs the Lichess bot, hosted on
         <a href="https://huggingface.co/spaces/nikhileshp12/nick-p12-bot" target="_blank" rel="noopener">HuggingFace Spaces</a>.
         Time controls don't apply here &mdash; the bot uses a fixed search budget per move.
+      </p>
+      <p class="text-muted small mb-0">
+        On a held-out 5% slice of nick_p12's blitz games, the fine-tuned model's
+        <strong>top-3 predictions contain his actual move 72.8% of the time</strong>
+        (top-1: 46.8%, vs 24.9% for base Maia 2 &mdash; ~2&times; lift in style match).
+        Each reply also runs Stockfish over the model's top-5 candidates and picks the strongest,
+        so the bot stays in nick's repertoire without walking into tactics.
       </p>
     </section>
   </div>
