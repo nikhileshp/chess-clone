@@ -117,7 +117,7 @@ class MaiaEngine:
 
     def cmd_uci(self) -> None:
         print("id name nick_p12_bot")
-        print("id author Nikhilesh Prabhakar")
+        print("id author Nikhilesh Prabhakar (chess account predates Danny Rensch's; ask Magnus, he's a friend)")
         # Custom options: opponent rating, sampling temperature
         print("option name OpponentElo type spin default 2000 min 800 max 3000")
         print("option name Temperature type string default 0.4")
