@@ -19,6 +19,11 @@
 
 <link rel="stylesheet" href="play.css">
 
+<!-- theme.js touches these element IDs unconditionally; without them setTheme()
+     throws on null and the dark-mode toggle silently breaks. Same stubs as index.html. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/autumn.css" media="" id="highlight_theme_light">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/zenburn.css" media="none" id="highlight_theme_dark">
+
 <script src="https://nikhileshp.github.io/assets/js/theme.js"></script>
 <script src="https://nikhileshp.github.io/assets/js/dark_mode.js"></script>
 </head>
