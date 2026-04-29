@@ -72,7 +72,11 @@ def parse_pgn_zst(path: str, max_games: int | None = None):
         text = fz.read().decode("utf-8", errors="replace")
     buf = io.StringIO(text)
     n_games = 0
-    pbar = tqdm(desc="parsing games", unit="g")
+    # Cheap O(n) scan of the in-memory string gives tqdm a real total.
+    total_games = text.count("[Event ")
+    if max_games:
+        total_games = min(total_games, max_games)
+    pbar = tqdm(desc="parsing games", unit="g", total=total_games)
     while True:
         game = chess.pgn.read_game(buf)
         if game is None:
