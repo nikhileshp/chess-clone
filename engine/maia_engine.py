@@ -16,7 +16,11 @@ Env vars:
   MAIA_DEVICE             "cuda" or "cpu" (default: auto-detect)
   MAIA_TEMPERATURE        softmax temperature for top-K sampling (default: 0.4)
   MAIA_TOPK               sample from top K moves (default: 5)
-  MAIA_BOOK_PLIES         use book within this many plies (default: 12)
+  MAIA_BOOK_MAX_PLIES     hard cap on book lookups (default: 30)
+  MAIA_MIN_BOOK_WEIGHT    minimum max-entry weight to USE the book at a given
+                          position (default: 15, ~10 games seen). Below this,
+                          the position isn't really part of the repertoire and
+                          we fall through to Maia2.
   MAIA_ELO_SELF           ELO bucket idx for the bot (default: 10 = >=2000)
   MAIA_ELO_OPPO           ELO bucket idx for opponent (default: 10; can override
                           per-game via UCI option)
@@ -52,7 +56,8 @@ BOOK_DIR = env("MAIA_BOOK_DIR", "./book")
 DEVICE_PREF = env("MAIA_DEVICE", "")
 TEMPERATURE = float(env("MAIA_TEMPERATURE", "0.4"))
 TOPK = int(env("MAIA_TOPK", "5"))
-BOOK_PLIES = int(env("MAIA_BOOK_PLIES", "12"))
+BOOK_MAX_PLIES = int(env("MAIA_BOOK_MAX_PLIES", "30"))
+MIN_BOOK_WEIGHT = int(env("MAIA_MIN_BOOK_WEIGHT", "15"))
 ELO_SELF = int(env("MAIA_ELO_SELF", "10"))
 ELO_OPPO_DEFAULT = int(env("MAIA_ELO_OPPO", "10"))
 
@@ -192,8 +197,11 @@ class MaiaEngine:
             # in mate/stalemate. Return a null-ish move; lichess-bot will resign.
             return chess.Move.null()
 
-        # 1) Try opening book within first N plies
-        if ply < BOOK_PLIES:
+        # 1) Try opening book — but only if the position is actually part of
+        #    the user's repertoire (max entry weight >= threshold). This lets
+        #    the book go deep into mainlines (Caro, QGD, etc.) while falling
+        #    through to Maia2 in unfamiliar branches the user only saw once.
+        if ply < BOOK_MAX_PLIES:
             book_move = self._book_pick()
             if book_move is not None:
                 logger.info("ply=%d book -> %s", ply, book_move.uci())
@@ -214,14 +222,28 @@ class MaiaEngine:
             return None
         if not entries:
             return None
-        # Sample by Polyglot weight (already proportional to user's frequency)
-        weights = [e.weight for e in entries]
-        moves = [e.move for e in entries]
+
+        # Frequency gate: only use the book if the user has played this position
+        # often enough that we trust the distribution. Weights are absolute
+        # (sum of per-game result_weights), so weight ~ game count * 1-2.
+        # Threshold 15 ~= 10+ games seen.
+        max_w = max(e.weight for e in entries)
+        if max_w < MIN_BOOK_WEIGHT:
+            logger.debug(
+                "ply=%d skip book (max_w=%d < %d)", self._board.ply(), max_w, MIN_BOOK_WEIGHT
+            )
+            return None
+
         # Filter to legal (Polyglot can produce illegal moves on rare malformed books)
         legal_set = set(self._board.legal_moves)
-        pairs = [(m, w) for m, w in zip(moves, weights) if m in legal_set]
+        pairs = [(e.move, e.weight) for e in entries if e.move in legal_set]
         if not pairs:
             return None
+        # Drop entries below threshold relative to the dominant move so we
+        # don't sample a 1-game oddity when there's a 200-game main line.
+        # Relative threshold: keep moves whose weight >= 5% of max.
+        rel_cutoff = max(1, max_w // 20)
+        pairs = [(m, w) for m, w in pairs if w >= rel_cutoff] or pairs
         moves, weights = zip(*pairs)
         return random.choices(moves, weights=weights, k=1)[0]
 

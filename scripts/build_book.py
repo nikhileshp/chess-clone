@@ -26,7 +26,7 @@ from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 
-MAX_PLIES_DEFAULT = 16  # 8 full moves
+MAX_PLIES_DEFAULT = 30  # 15 full moves; engine gates by absolute weight, not ply
 
 
 def result_weight(result: str, user_is_white: bool) -> float:
@@ -89,14 +89,21 @@ def build(pgn_path: Path, out_path: Path, user: str, max_plies: int) -> None:
 
     # Polyglot file: sorted by key, each entry is 16 bytes:
     #   uint64 key (BE), uint16 move (BE), uint16 weight (BE), uint32 learn (BE)
+    #
+    # IMPORTANT: We store ABSOLUTE weights (sum of result_weights) capped at
+    # 65535 — NOT per-position normalized. This lets the engine threshold by
+    # frequency: max(weights at position) ~= number of games this position
+    # was seen, with result-direction tie-breaking. So a position with 100
+    # games has weight ~150 (1.5 avg) while a 1-game position has weight ~1.
+    # The engine's MIN_BOOK_WEIGHT cutoff then means "use book only if a
+    # position appeared in at least N of nick's games."
     entries: list[tuple[int, int, int]] = []
     for key, moves in table.items():
-        # Normalize so the most-frequent move gets weight ~65535
         max_w = max(moves.values())
         if max_w <= 0:
             continue
         for mv, w in moves.items():
-            scaled = max(1, min(65535, int(round(w / max_w * 65535))))
+            scaled = max(1, min(65535, int(round(w))))
             entries.append((key, mv, scaled))
     entries.sort(key=lambda x: (x[0], -x[2]))
 
