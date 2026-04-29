@@ -1,6 +1,9 @@
 # Engine + lichess-bot deps
 torch==2.4.0
 numpy>=1.26,<2.2
+pandas>=2.0
+gdown>=5.2
+einops>=0.7
 maia2
 chess>=1.11
 pyzstd
