@@ -1,0 +1,79 @@
+/* play.html — in-browser game vs nick_p12_bot */
+
+.play-board-wrap {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+#playBoard {
+  width: 100%;
+}
+
+.play-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  min-height: 1.5em;
+}
+
+.play-status__text {
+  flex: 1 1 auto;
+}
+
+.play-status--error .play-status__text {
+  color: #c0392b;
+}
+
+.play-status--book .play-status__text::after {
+  content: " · book";
+  color: #7c8696;
+  font-style: italic;
+  font-size: 0.85em;
+}
+
+.play-controls .card-title {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.play-controls .btn-block + .btn-block {
+  margin-top: 0.5rem;
+}
+
+.move-list {
+  max-height: 220px;
+  overflow-y: auto;
+  font-family: "Roboto Mono", ui-monospace, monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.move-list .move-pair {
+  display: inline-block;
+  margin-right: 0.75rem;
+  white-space: nowrap;
+}
+
+.move-list .move-pair__num {
+  color: #7c8696;
+  margin-right: 0.25rem;
+}
+
+.move-list .move-pair__san--last {
+  background: #fff3cd;
+  border-radius: 3px;
+  padding: 0 0.2rem;
+}
+
+[data-theme="dark"] .move-list .move-pair__san--last {
+  background: #4a3f1a;
+}
+
+[data-theme="dark"] .move-list .move-pair__num {
+  color: #95a3b3;
+}
+
+[data-theme="dark"] .play-status--error .play-status__text {
+  color: #ff7a6c;
+}
