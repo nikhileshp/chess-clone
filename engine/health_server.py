@@ -66,7 +66,12 @@ def _get_engine():
         if _engine is not None:
             return _engine
         try:
-            # Import here so /health works even if maia_engine import fails
+            # The Dockerfile copies maia_engine.py to /app/engine/, but
+            # health_server runs from /app/. Make the engine module importable.
+            import sys as _sys
+            for cand in ("/app/engine", str(Path(__file__).resolve().parent / "engine"), str(Path(__file__).resolve().parent)):
+                if cand not in _sys.path and Path(cand).is_dir():
+                    _sys.path.insert(0, cand)
             from maia_engine import MaiaEngine  # type: ignore
 
             logger.info("Loading MaiaEngine for /predict (first request)...")
