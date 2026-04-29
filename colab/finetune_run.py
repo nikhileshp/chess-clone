@@ -176,6 +176,9 @@ random.Random(cfg.seed).shuffle(_samples)
 _n_val = int(len(_samples) * cfg.val_fraction)
 _train_rows = _samples[_n_val:]
 _val_rows = _samples[:_n_val]
+# Expose without underscore so downstream scripts (e.g. sanity_check.py) can reuse.
+train_rows = _train_rows
+val_rows = _val_rows
 print(f"  train={len(_train_rows)} val={len(_val_rows)}")
 
 train_dl = DataLoader(
