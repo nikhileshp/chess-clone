@@ -39,7 +39,7 @@ COPY pull_model.py /app/pull_model.py
 # Opening books are tiny (<1MB total); ship them in the image
 COPY book/ /app/engine/book/
 
-RUN chmod +x /app/start.sh
+RUN chmod +x /app/start.sh /app/engine/maia_engine.py
 
 # Pre-create writable dirs HF Spaces expects
 RUN mkdir -p /app/model /app/.cache/huggingface

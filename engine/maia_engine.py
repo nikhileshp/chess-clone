@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """UCI engine wrapping Maia2 fine-tuned for nick_p12.
 
 Strategy:
