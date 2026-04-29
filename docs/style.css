@@ -11,9 +11,9 @@
   --fg-soft:      #4a4f55;
   --fg-mute:      #828589;
   --rule:         #e1e1de;
-  --accent:       #B509AC;          /* al-folio default purple-ish accent — adjust to your theme */
-  --accent-soft:  #e0bce0;
-  --accent-tint:  #f5e7f5;
+  --accent:       #0076df;          /* deep blue — common al-folio alternate */
+  --accent-soft:  #5ba6ec;
+  --accent-tint:  #e3f0fa;
   --green:        #2e7d32;
   --warm:         #b3261e;
 }
