@@ -449,7 +449,7 @@ footer.fixed-bottom a:hover { color: var(--accent); border-bottom-color: var(--a
 }
 
 /* ─── Theme toggle button ─── */
-#theme-toggle {
+#light-toggle {
   background: transparent;
   border: 1px solid var(--rule);
   color: var(--fg-soft);
@@ -463,12 +463,12 @@ footer.fixed-bottom a:hover { color: var(--accent); border-bottom-color: var(--a
   cursor: pointer;
   transition: color 150ms ease, border-color 150ms ease, transform 150ms ease;
 }
-#theme-toggle:hover {
+#light-toggle:hover {
   color: var(--accent);
   border-color: var(--accent);
   transform: rotate(20deg);
 }
-#theme-toggle .fa-sun { display: none; }
-#theme-toggle .fa-moon { display: inline-block; }
-:root[data-theme='dark'] #theme-toggle .fa-sun { display: inline-block; }
-:root[data-theme='dark'] #theme-toggle .fa-moon { display: none; }
+#light-toggle .fa-sun { display: none; }
+#light-toggle .fa-moon { display: inline-block; }
+:root[data-theme='dark'] #light-toggle .fa-sun { display: inline-block; }
+:root[data-theme='dark'] #light-toggle .fa-moon { display: none; }

@@ -238,39 +238,10 @@ async function updateRecentGames() {
 }
 
 // ──────────────────────────────────────────────────────────────
-// Theme toggle (light / dark) — wires the navbar button
+// Theme observer — al-folio's theme.js / dark_mode.js drive the toggle
+// (button id "light-toggle"). We just watch data-theme on <html> and
+// re-skin the embedded board to match.
 // ──────────────────────────────────────────────────────────────
-
-function applyTheme(next) {
-  const t = next === "dark" ? "dark" : "light";
-  document.documentElement.setAttribute("data-theme", t);
-  // Also toggle a body class as a redundant signal, in case any CSS
-  // (or 3rd-party widget) depends on the class form rather than the attr.
-  document.body.classList.toggle("theme-dark", t === "dark");
-  document.body.classList.toggle("theme-light", t === "light");
-  try { localStorage.setItem("theme", t); } catch (_) {}
-  console.log("[theme] applied:", t, "data-theme=", document.documentElement.getAttribute("data-theme"));
-}
-
-// Apply current theme on first script run (so body classes match attribute).
-applyTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
-
-const themeBtn = document.getElementById("theme-toggle");
-if (themeBtn) {
-  themeBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const cur = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-    const next = cur === "dark" ? "light" : "dark";
-    console.log("[theme] click:", cur, "->", next);
-    applyTheme(next);
-  });
-  console.log("[theme] toggle handler attached");
-} else {
-  console.warn("[theme] #theme-toggle button not found");
-}
-
-// When the theme attribute changes, reload the iframe with the matching bg.
 const themeObserver = new MutationObserver((mutations) => {
   for (const m of mutations) {
     if (m.attributeName !== "data-theme") continue;

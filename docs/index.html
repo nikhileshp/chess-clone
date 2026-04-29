@@ -20,18 +20,17 @@
 <link rel="shortcut icon" href="https://nikhileshp.github.io/assets/img/np_logo.jpeg">
 <link rel="canonical" href="https://nikhileshp.github.io/chess-clone/">
 <link rel="stylesheet" href="style.css">
-<script>
-  // Inline + early to avoid theme flicker on first paint.
-  (function() {
-    var saved = localStorage.getItem('theme');
-    var theme = (saved === 'dark' || saved === 'light')
-      ? saved
-      : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    if (theme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    }
-  })();
-</script>
+
+<!-- Stubs that the al-folio theme.js expects to find (it toggles their `media`
+     attribute on theme change). Loading the actual highlight CSS keeps any
+     code blocks in sync with the site's theme. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/autumn.css" media="" id="highlight_theme_light">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/zenburn.css" media="none" id="highlight_theme_dark">
+
+<!-- Use the EXACT same theme scripts as nikhileshp.github.io main site so
+     the toggle is identical across the whole portfolio. -->
+<script src="https://nikhileshp.github.io/assets/js/theme.js"></script>
+<script src="https://nikhileshp.github.io/assets/js/dark_mode.js"></script>
 </head>
 <body class="fixed-top-nav">
 
@@ -58,7 +57,7 @@
           <li class="nav-item"><a class="nav-link" href="/teaching/">teaching</a></li>
           <li class="nav-item active"><a class="nav-link" href="/chess-clone/">nick_p12_bot<span class="sr-only">(current)</span></a></li>
           <li class="nav-item">
-            <button id="theme-toggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode">
+            <button id="light-toggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode">
               <i class="fas fa-moon"></i>
               <i class="fas fa-sun"></i>
             </button>
