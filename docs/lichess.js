@@ -16,9 +16,12 @@ const API_CURRENT = `https://lichess.org/api/user/${BOT}/current-game?moves=fals
 const API_GAMES = `https://lichess.org/api/games/user/${BOT}?max=5&moves=false&pgnInJson=false`;
 
 const EMBED_THEME = "brown";
-const EMBED_BG = "light";
 const REFRESH_USER_MS = 30_000;
 const REFRESH_GAME_MS = 15_000;
+
+function currentBg() {
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+}
 
 const fmt = new Intl.NumberFormat("en-US");
 const $ = (id) => document.getElementById(id);
@@ -82,7 +85,7 @@ let currentEmbedGameId = null;
 
 function buildEmbedUrl(gameId, color) {
   const orientation = color || "white";
-  return `https://lichess.org/embed/game/${encodeURIComponent(gameId)}?theme=${EMBED_THEME}&bg=${EMBED_BG}&orientation=${orientation}`;
+  return `https://lichess.org/embed/game/${encodeURIComponent(gameId)}?theme=${EMBED_THEME}&bg=${currentBg()}&orientation=${orientation}`;
 }
 
 function showPlaceholder() {
@@ -158,9 +161,19 @@ function handleCurrentGame(g, ongoing) {
 
   const oppInfo = opponentInfo(g);
   const tc = timeControlLabel(g);
-  $("captionEyebrow").textContent = ongoing ? "● Live now" : "Most recent game";
+  const when = g.createdAt ? formatGameDate(new Date(g.createdAt)) : "—";
+  $("captionEyebrow").textContent = `Last game · ${when}`;
   const title = `vs ${escapeHTML(oppInfo.name)} (${oppInfo.rating ?? "?"}) · ${tc} ${escapeHTML(g.speed ?? "")}`;
   $("captionTitle").innerHTML = title;
+}
+
+const GAME_DT_FMT = new Intl.DateTimeFormat("en-US", {
+  month: "short", day: "numeric",
+  hour: "numeric", minute: "2-digit",
+});
+function formatGameDate(d) {
+  // Show "Apr 29, 2:45 PM" — local timezone
+  return GAME_DT_FMT.format(d);
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -222,6 +235,49 @@ async function updateRecentGames() {
     list.innerHTML = '<li class="recent-loading">Couldn’t reach Lichess. Refresh in a moment.</li>';
   }
 }
+
+// ──────────────────────────────────────────────────────────────
+// Theme toggle (light / dark) — wires the navbar button
+// ──────────────────────────────────────────────────────────────
+
+function applyTheme(next) {
+  if (next === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+  } else {
+    document.documentElement.removeAttribute("data-theme");
+  }
+  try { localStorage.setItem("theme", next); } catch (_) {}
+}
+
+const themeBtn = document.getElementById("theme-toggle");
+if (themeBtn) {
+  themeBtn.addEventListener("click", () => {
+    const cur = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+    applyTheme(cur === "dark" ? "light" : "dark");
+  });
+}
+
+// When the theme attribute changes, reload the iframe with the matching bg.
+const themeObserver = new MutationObserver((mutations) => {
+  for (const m of mutations) {
+    if (m.attributeName !== "data-theme") continue;
+    const wrap = $("boardWrap");
+    const iframe = wrap?.querySelector("iframe");
+    if (!iframe?.dataset.gid) continue;
+    try {
+      const oldUrl = new URL(iframe.src);
+      const orientation = oldUrl.searchParams.get("orientation") || "white";
+      iframe.src = buildEmbedUrl(iframe.dataset.gid, orientation);
+    } catch (_) {
+      // If URL parsing fails, just fully rebuild
+      iframe.src = buildEmbedUrl(iframe.dataset.gid, "white");
+    }
+  }
+});
+themeObserver.observe(document.documentElement, {
+  attributes: true,
+  attributeFilter: ["data-theme"],
+});
 
 // ──────────────────────────────────────────────────────────────
 // Boot
