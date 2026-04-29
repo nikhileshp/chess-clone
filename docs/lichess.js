@@ -15,13 +15,14 @@ const API_USER = `https://lichess.org/api/user/${BOT}`;
 const API_CURRENT = `https://lichess.org/api/user/${BOT}/current-game?moves=false&clocks=false&evals=false`;
 const API_GAMES = `https://lichess.org/api/games/user/${BOT}?max=5&moves=false&pgnInJson=false`;
 
-const EMBED_THEME = "brown";
 const REFRESH_USER_MS = 30_000;
 const REFRESH_GAME_MS = 15_000;
 
-function currentBg() {
-  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+function isDark() {
+  return document.documentElement.dataset.theme === "dark";
 }
+function currentBg() { return isDark() ? "dark" : "light"; }
+function currentBoardTheme() { return isDark() ? "wood" : "brown"; }
 
 const fmt = new Intl.NumberFormat("en-US");
 const $ = (id) => document.getElementById(id);
@@ -85,7 +86,7 @@ let currentEmbedGameId = null;
 
 function buildEmbedUrl(gameId, color) {
   const orientation = color || "white";
-  return `https://lichess.org/embed/game/${encodeURIComponent(gameId)}?theme=${EMBED_THEME}&bg=${currentBg()}&orientation=${orientation}`;
+  return `https://lichess.org/embed/game/${encodeURIComponent(gameId)}?theme=${currentBoardTheme()}&bg=${currentBg()}&orientation=${orientation}`;
 }
 
 function showPlaceholder() {
@@ -241,11 +242,10 @@ async function updateRecentGames() {
 // ──────────────────────────────────────────────────────────────
 
 function applyTheme(next) {
-  if (next === "dark") {
-    document.documentElement.setAttribute("data-theme", "dark");
-  } else {
-    document.documentElement.removeAttribute("data-theme");
-  }
+  // Always set the attribute explicitly (don't remove it) — avoids edge
+  // cases where stale state on <html> prevents the light-mode CSS from
+  // re-applying after a previous dark-mode pass.
+  document.documentElement.setAttribute("data-theme", next === "dark" ? "dark" : "light");
   try { localStorage.setItem("theme", next); } catch (_) {}
 }
 
