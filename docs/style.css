@@ -83,14 +83,39 @@ h5 { font-weight: 500; font-size: 1.1rem; margin-bottom: 0.7rem; }
 a { color: var(--accent); text-decoration: none; transition: color 150ms ease; }
 a:hover { color: color-mix(in srgb, var(--accent) 70%, var(--fg)); text-decoration: underline; }
 
-/* ─── Navbar ─── */
-.navbar { background: var(--bg-translucent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); padding: 0.5rem 1rem; }
+/* ─── Navbar (mirrors al-folio _sass/_base.scss) ─── */
+.navbar {
+  box-shadow: none !important;
+  border-bottom: 1px solid var(--rule);
+  background-color: var(--bg) !important;
+  opacity: 0.95;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
 .navbar-brand.social { display: flex; gap: 0.6rem; }
-.navbar-brand.social a { color: var(--fg-soft); font-size: 1.1rem; padding: 0.2rem 0.4rem; }
+.navbar-brand.social a { color: var(--fg); font-size: 1.1rem; padding: 0.2rem 0.4rem; transition: color 0.2s ease-in-out; }
 .navbar-brand.social a:hover { color: var(--accent); }
-.navbar-nav .nav-link { color: var(--fg-soft) !important; font-weight: 400; font-size: 0.95rem; padding: 0.5rem 0.85rem !important; transition: color 150ms ease; }
-.navbar-nav .nav-link:hover { color: var(--accent) !important; }
-.navbar-nav .nav-item.active .nav-link { color: var(--accent) !important; font-weight: 500; }
+.navbar.navbar-light .navbar-nav .nav-item .nav-link {
+  color: var(--fg);
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+.navbar.navbar-light .navbar-nav .nav-item .nav-link:hover {
+  color: var(--accent);
+  background-color: transparent !important;
+}
+.navbar.navbar-light .navbar-nav .nav-item.active > .nav-link,
+.navbar.navbar-light .navbar-nav .nav-item.active .nav-link {
+  background-color: inherit !important;
+  background: transparent !important;
+  font-weight: bolder;
+  color: var(--accent);
+  box-shadow: none !important;
+}
+.navbar.navbar-light .navbar-nav .nav-item.active > .nav-link:hover {
+  color: var(--accent);
+  background-color: transparent !important;
+}
 
 /* ─── Page header / post title ─── */
 .post-header { margin-bottom: 2rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
