@@ -21,7 +21,10 @@ const REFRESH_GAME_MS = 15_000;
 function isDark() {
   return document.documentElement.dataset.theme === "dark";
 }
-function currentBg() { return isDark() ? "dark" : "light"; }
+// In dark mode, ask Lichess for a transparent embed bg so the iframe
+// blends with .board-card__body's page-themed color (var(--bg-soft))
+// instead of Lichess's near-black default.
+function currentBg() { return isDark() ? "transparent" : "light"; }
 function currentBoardTheme() { return isDark() ? "wood" : "brown"; }
 
 const fmt = new Intl.NumberFormat("en-US");
