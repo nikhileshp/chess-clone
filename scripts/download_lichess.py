@@ -27,8 +27,8 @@ def download(user: str, out_path: Path, perf_type: str = "blitz", token: str | N
     params = {
         "perfType": perf_type,
         "rated": "true",
-        "clocks": "false",
-        "evals": "false",
+        "clocks": "true",
+        "evals": "true",
         "opening": "false",
         "literate": "false",
     }

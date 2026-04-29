@@ -2,6 +2,7 @@
 torch==2.4.0
 numpy>=1.26,<2.2
 pandas>=2.0
+lightgbm>=4.3
 gdown>=5.2
 einops>=0.7
 maia2

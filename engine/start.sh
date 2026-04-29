@@ -16,9 +16,10 @@ echo "=== nick_p12_bot starting at $(date -Iseconds) ==="
 # its own dir before spawning us, so we must hard-pin absolute paths here.
 export MAIA_CHECKPOINT_PATH=/app/model/nick_p12.pt
 export MAIA_BOOK_DIR=/app/engine/book
+export MAIA_TIME_MODEL_DIR=/app/weights/time_model
 
-# --- Pull the fine-tuned checkpoint ---
-echo "Pulling checkpoint from huggingface://${MAIA_HF_REPO}..."
+# --- Pull the fine-tuned checkpoint + time-mimic LightGBM models ---
+echo "Pulling checkpoint + time-mimic models from huggingface://${MAIA_HF_REPO}..."
 python /app/pull_model.py
 
 # --- Patch the lichess-bot config with the token (config.yml is checked in

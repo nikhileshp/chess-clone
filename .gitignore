@@ -22,6 +22,19 @@ data/clean/dropped.txt
 colab_outputs/
 *.lock.tmp
 
+# Local model checkpoints (280 MB; live in HF Hub, not git)
+weights/
+*.pt
+
+# Per-move feature CSVs (regenerable from raw PGNs in <15 min)
+data/processed/
+
+# Local Maia2 base model cache (downloaded at runtime)
+maia2_models/
+
+# Claude Code session state
+.claude/
+
 # Editor / OS
 .idea/
 .vscode/

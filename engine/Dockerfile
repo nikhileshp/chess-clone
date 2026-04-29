@@ -31,6 +31,7 @@ RUN git clone --depth 1 https://github.com/lichess-bot-devs/lichess-bot.git ${LI
 
 # Engine code + opening books
 COPY maia_engine.py /app/engine/maia_engine.py
+COPY time_mimic.py /app/engine/time_mimic.py
 COPY config.yml /app/engine/config.yml
 COPY start.sh /app/start.sh
 COPY health_server.py /app/health_server.py
@@ -38,6 +39,11 @@ COPY pull_model.py /app/pull_model.py
 
 # Opening books are tiny (<1MB total); ship them in the image
 COPY book/ /app/engine/book/
+
+# Time-mimic models are pulled from HF at container start (see pull_model.py).
+# Pre-create the destination dir so pull_model.py's hf_hub_download can land
+# files there without permission errors on read-only HF Spaces filesystems.
+RUN mkdir -p /app/weights/time_model
 
 RUN chmod +x /app/start.sh /app/engine/maia_engine.py
 
