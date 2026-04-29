@@ -21,6 +21,25 @@
   --piece-color:        #c0c0bc;
 }
 
+/* Explicit light mode — same as :root defaults, but covers `data-theme='light'`
+   the JS now sets explicitly (instead of removing the attribute). */
+:root[data-theme='light'] {
+  --bg:                 #ffffff;
+  --bg-soft:            #f6f6f4;
+  --bg-translucent:     rgba(255, 255, 255, 0.94);
+  --fg:                 #212529;
+  --fg-soft:            #4a4f55;
+  --fg-mute:            #828589;
+  --rule:               #e1e1de;
+  --accent:             #0076df;
+  --accent-soft:        #5ba6ec;
+  --accent-tint:        #e3f0fa;
+  --on-accent:          #ffffff;
+  --green:              #2e7d32;
+  --warm:               #b3261e;
+  --piece-color:        #c0c0bc;
+}
+
 /* Dark mode — orange accent, mirroring nikhileshp.github.io main-site dark mode */
 :root[data-theme='dark'] {
   --bg:                 #2c4046;
