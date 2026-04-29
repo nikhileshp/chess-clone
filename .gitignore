@@ -1,0 +1,28 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Raw API dumps and uncompressed PGN (large, regenerable)
+data/raw/
+data/clean/*.pgn
+data/clean/dropped.txt
+
+# Allow the compressed training set + Polyglot books into git
+!data/clean/all.pgn.zst
+# data/books/*.bin kept (regenerable but small, ~1 MB total)
+
+# Colab session outputs (re-pulled from cloud each run)
+colab_outputs/
+*.lock.tmp
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
