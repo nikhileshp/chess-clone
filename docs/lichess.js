@@ -202,7 +202,7 @@ async function updateRecentGames() {
   try {
     const games = await fetchNDJSON(API_GAMES);
     if (!games.length) {
-      list.innerHTML = '<li class="recent__loading">No games yet — be the first to challenge.</li>';
+      list.innerHTML = '<li class="recent-loading">No games yet — be the first to challenge.</li>';
       return;
     }
     list.innerHTML = games.map((g) => {
@@ -212,16 +212,16 @@ async function updateRecentGames() {
       const tc = timeControlLabel(g);
       const url = `https://lichess.org/${g.id}`;
       return `<li>
-        <span class="recent__date">${date}</span>
-        <span class="recent__opp"><a href="${url}" target="_blank" rel="noopener">${escapeHTML(opp.name)}</a><span class="opp__rating">${opp.rating ?? ""}</span></span>
-        <span class="recent__tc">${tc} ${escapeHTML(g.speed ?? "")}</span>
-        <span class="recent__color">as ${opp.botColor}</span>
-        <span class="recent__result recent__result--${result.tag}">${result.label}</span>
+        <span class="recent-date">${date}</span>
+        <span class="recent-opp"><a href="${url}" target="_blank" rel="noopener">${escapeHTML(opp.name)}</a><span class="opp-rating">${opp.rating ?? ""}</span></span>
+        <span class="recent-tc">${tc} ${escapeHTML(g.speed ?? "")}</span>
+        <span class="recent-color">as ${opp.botColor}</span>
+        <span class="recent-result recent-result--${result.tag}">${result.label}</span>
       </li>`;
     }).join("");
   } catch (e) {
     console.warn("games fetch failed", e);
-    list.innerHTML = '<li class="recent__loading">Couldn’t reach Lichess. Refresh in a moment.</li>';
+    list.innerHTML = '<li class="recent-loading">Couldn’t reach Lichess. Refresh in a moment.</li>';
   }
 }
 
