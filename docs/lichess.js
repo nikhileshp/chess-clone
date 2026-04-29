@@ -49,11 +49,9 @@ async function updateUserData() {
     const blitz = u?.perfs?.blitz?.rating;
     const blitzGames = u?.perfs?.blitz?.games ?? 0;
     const blitzProg = u?.perfs?.blitz?.prog;
-    const rapid = u?.perfs?.rapid?.rating;
     const total = u?.count?.rated ?? u?.count?.all ?? 0;
 
     $("ratingBlitz").textContent = blitz ? fmt.format(blitz) : "—";
-    $("ratingRapid").textContent = rapid ? fmt.format(rapid) : "—";
     $("totalGames").textContent = fmt.format(total);
 
     if (typeof blitzProg === "number" && blitzProg !== 0) {
