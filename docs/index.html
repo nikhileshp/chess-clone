@@ -137,6 +137,32 @@
             <div class="rating-card__value" id="totalGames">—</div>
           </div>
 
+          <div class="rating-card mt-3">
+            <div class="rating-card__label">Win &middot; Draw &middot; Loss</div>
+            <div class="rating-card__value" id="wdlRecord">—</div>
+            <div class="rating-card__delta" id="wdlSummary"></div>
+          </div>
+
+          <div class="opp-stats mt-3">
+            <div class="opp-stats__title">Avg opponent rating</div>
+            <div class="opp-stats__row">
+              <span class="opp-stats__label">Overall</span>
+              <span class="opp-stats__value" id="avgOppOverall">—</span>
+            </div>
+            <div class="opp-stats__row opp-stats__row--win">
+              <span class="opp-stats__label"><i class="fas fa-trophy mr-1"></i>When winning</span>
+              <span class="opp-stats__value" id="avgOppWin">—</span>
+            </div>
+            <div class="opp-stats__row opp-stats__row--draw">
+              <span class="opp-stats__label"><i class="fas fa-equals mr-1"></i>When drawing</span>
+              <span class="opp-stats__value" id="avgOppDraw">—</span>
+            </div>
+            <div class="opp-stats__row opp-stats__row--loss">
+              <span class="opp-stats__label"><i class="fas fa-times mr-1"></i>When losing</span>
+              <span class="opp-stats__value" id="avgOppLoss">—</span>
+            </div>
+          </div>
+
           <div class="quick-links mt-3">
             <a href="https://lichess.org/@/nick_p12_bot/tv" target="_blank" rel="noopener"><i class="fas fa-tv mr-1"></i>Live games on Lichess</a>
             <a href="https://lichess.org/@/nick_p12_bot" target="_blank" rel="noopener"><i class="fas fa-user mr-1"></i>Bot profile</a>

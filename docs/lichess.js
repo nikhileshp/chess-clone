@@ -56,9 +56,24 @@ async function updateUserData() {
     const blitzGames = u?.perfs?.blitz?.games ?? 0;
     const blitzProg = u?.perfs?.blitz?.prog;
     const total = u?.count?.rated ?? u?.count?.all ?? 0;
+    const win = u?.count?.win ?? 0;
+    const draw = u?.count?.draw ?? 0;
+    const loss = u?.count?.loss ?? 0;
 
     $("ratingBlitz").textContent = blitz ? fmt.format(blitz) : "—";
     $("totalGames").textContent = fmt.format(total);
+
+    const wdlEl = $("wdlRecord");
+    if (wdlEl) {
+      wdlEl.textContent = `${fmt.format(win)} · ${fmt.format(draw)} · ${fmt.format(loss)}`;
+      const decided = win + loss;
+      if (decided > 0) {
+        const pct = Math.round((win / decided) * 100);
+        $("wdlSummary").textContent = `${pct}% win rate among decided games`;
+      } else {
+        $("wdlSummary").textContent = "";
+      }
+    }
 
     if (typeof blitzProg === "number" && blitzProg !== 0) {
       const sign = blitzProg > 0 ? "+" : "";
@@ -240,6 +255,38 @@ async function updateRecentGames() {
 }
 
 // ──────────────────────────────────────────────────────────────
+// Avg opponent rating — bucket recent rated blitz games by outcome
+// ──────────────────────────────────────────────────────────────
+
+const STATS_GAMES_URL = `https://lichess.org/api/games/user/${BOT}?max=100&rated=true&perfType=blitz&moves=false&pgnInJson=false`;
+
+async function updateStats() {
+  try {
+    const games = await fetchNDJSON(STATS_GAMES_URL);
+    const buckets = { win: [], draw: [], loss: [] };
+    for (const g of games) {
+      const opp = opponentInfo(g);
+      if (typeof opp.rating !== "number") continue;
+      const result = classifyResult(g);
+      buckets[result.tag].push(opp.rating);
+    }
+    const all = [...buckets.win, ...buckets.draw, ...buckets.loss];
+    const avg = (arr) => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null;
+    const setVal = (id, n) => {
+      const el = $(id);
+      if (!el) return;
+      el.textContent = n != null ? fmt.format(n) : "—";
+    };
+    setVal("avgOppOverall", avg(all));
+    setVal("avgOppWin", avg(buckets.win));
+    setVal("avgOppDraw", avg(buckets.draw));
+    setVal("avgOppLoss", avg(buckets.loss));
+  } catch (e) {
+    console.warn("stats fetch failed", e);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
 // Theme observer — al-folio's theme.js / dark_mode.js drive the toggle
 // (button id "light-toggle"). We just watch data-theme on <html> and
 // re-skin the embedded board to match.
@@ -272,6 +319,7 @@ themeObserver.observe(document.documentElement, {
 updateUserData();
 updateCurrentGame();
 updateRecentGames();
+updateStats();
 setInterval(updateUserData, REFRESH_USER_MS);
 setInterval(updateCurrentGame, REFRESH_GAME_MS);
 document.addEventListener("visibilitychange", () => {
