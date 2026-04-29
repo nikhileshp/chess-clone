@@ -132,34 +132,15 @@
             <div class="rating-card__delta" id="deltaBlitz"></div>
           </div>
 
-          <div class="rating-card rating-card--small mt-3">
-            <div class="rating-card__label">Games played</div>
-            <div class="rating-card__value" id="totalGames">—</div>
-          </div>
-
-          <div class="rating-card mt-3">
-            <div class="rating-card__label">Win &middot; Draw &middot; Loss</div>
-            <div class="rating-card__value" id="wdlRecord">—</div>
-            <div class="rating-card__delta" id="wdlSummary"></div>
-          </div>
-
-          <div class="opp-stats mt-3">
-            <div class="opp-stats__title">Avg opponent rating</div>
-            <div class="opp-stats__row">
-              <span class="opp-stats__label">Overall</span>
-              <span class="opp-stats__value" id="avgOppOverall">—</span>
+          <div class="rating-card rating-card--split mt-3">
+            <div class="rating-card__cell">
+              <div class="rating-card__label">Games</div>
+              <div class="rating-card__value" id="totalGames">—</div>
             </div>
-            <div class="opp-stats__row opp-stats__row--win">
-              <span class="opp-stats__label"><i class="fas fa-trophy mr-1"></i>When winning</span>
-              <span class="opp-stats__value" id="avgOppWin">—</span>
-            </div>
-            <div class="opp-stats__row opp-stats__row--draw">
-              <span class="opp-stats__label"><i class="fas fa-equals mr-1"></i>When drawing</span>
-              <span class="opp-stats__value" id="avgOppDraw">—</span>
-            </div>
-            <div class="opp-stats__row opp-stats__row--loss">
-              <span class="opp-stats__label"><i class="fas fa-times mr-1"></i>When losing</span>
-              <span class="opp-stats__value" id="avgOppLoss">—</span>
+            <div class="rating-card__cell">
+              <div class="rating-card__label">W &middot; D &middot; L</div>
+              <div class="rating-card__value" id="wdlRecord">—</div>
+              <div class="rating-card__delta" id="wdlSummary"></div>
             </div>
           </div>
 
@@ -167,6 +148,30 @@
             <a href="https://lichess.org/@/nick_p12_bot/tv" target="_blank" rel="noopener"><i class="fas fa-tv mr-1"></i>Live games on Lichess</a>
             <a href="https://lichess.org/@/nick_p12_bot" target="_blank" rel="noopener"><i class="fas fa-user mr-1"></i>Bot profile</a>
             <a href="https://github.com/CSSLab/maia2" target="_blank" rel="noopener" title="Maia 2 — original research code"><i class="fab fa-github mr-1"></i>Maia 2 source</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Horizontal avg-opponent strip — sits under the board so the
+           sidebar doesn't have to grow to accommodate it. -->
+      <div class="opp-stats opp-stats--strip mt-4">
+        <div class="opp-stats__title">Avg opponent rating <span class="opp-stats__sub">(last 100 rated blitz)</span></div>
+        <div class="opp-stats__grid">
+          <div class="opp-stats__cell">
+            <div class="opp-stats__label">Overall</div>
+            <div class="opp-stats__value" id="avgOppOverall">—</div>
+          </div>
+          <div class="opp-stats__cell opp-stats__cell--win">
+            <div class="opp-stats__label"><i class="fas fa-trophy mr-1"></i>When winning</div>
+            <div class="opp-stats__value" id="avgOppWin">—</div>
+          </div>
+          <div class="opp-stats__cell opp-stats__cell--draw">
+            <div class="opp-stats__label"><i class="fas fa-equals mr-1"></i>When drawing</div>
+            <div class="opp-stats__value" id="avgOppDraw">—</div>
+          </div>
+          <div class="opp-stats__cell opp-stats__cell--loss">
+            <div class="opp-stats__label"><i class="fas fa-times mr-1"></i>When losing</div>
+            <div class="opp-stats__value" id="avgOppLoss">—</div>
           </div>
         </div>
       </div>

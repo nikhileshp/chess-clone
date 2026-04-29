@@ -371,19 +371,34 @@ a:hover { color: color-mix(in srgb, var(--accent) 70%, var(--fg)); text-decorati
   font-size: 1.4rem;
 }
 
-/* WDL number is dense; tighten the headline so 234·12·89 doesn't wrap. */
+/* Side-by-side mini-card: shows Games + W·D·L without doubling vertical space. */
+.rating-card--split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  border-left-width: 1px;
+}
+.rating-card--split .rating-card__cell + .rating-card__cell {
+  border-left: 1px solid var(--rule);
+  padding-left: 0.7rem;
+}
+.rating-card--split .rating-card__value { font-size: 1.35rem; }
 #wdlRecord {
-  font-size: 1.6rem;
+  font-size: 1.15rem;
   font-feature-settings: "tnum";
   letter-spacing: 0.01em;
+  white-space: nowrap;
 }
+#wdlSummary { font-size: 0.7rem; }
 
-/* Avg-opponent-by-outcome card: rows of label + tabular-figure value. */
+/* Avg-opponent-by-outcome strip — horizontal grid below the board so the
+   sidebar stays short and the wide page space is used productively. */
 .opp-stats {
   border: 1px solid var(--rule);
   border-radius: 4px;
   background: var(--bg);
-  padding: 0.7rem 0.9rem 0.5rem;
+  padding: 0.7rem 1rem 0.85rem;
 }
 .opp-stats__title {
   font-size: 0.72rem;
@@ -391,29 +406,52 @@ a:hover { color: color-mix(in srgb, var(--accent) 70%, var(--fg)); text-decorati
   text-transform: uppercase;
   color: var(--fg-mute);
   font-weight: 500;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
 }
-.opp-stats__row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 0.2rem 0;
-  font-size: 0.88rem;
+.opp-stats__sub {
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--fg-mute);
+  font-weight: 400;
+  margin-left: 0.4rem;
+}
+.opp-stats__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.85rem;
+}
+.opp-stats__cell {
+  border-left: 3px solid var(--rule);
+  padding: 0.1rem 0 0.1rem 0.7rem;
+}
+.opp-stats__label {
+  font-size: 0.78rem;
   color: var(--fg-soft);
-  border-top: 1px dashed var(--rule);
+  margin-bottom: 0.15rem;
 }
-.opp-stats__row:first-of-type { border-top: 0; }
-.opp-stats__label { color: var(--fg-soft); }
 .opp-stats__value {
   font-family: "Roboto Slab", serif;
-  font-weight: 400;
-  font-size: 1rem;
+  font-weight: 300;
+  font-size: 1.45rem;
   color: var(--fg);
   font-feature-settings: "tnum";
+  line-height: 1.1;
 }
-.opp-stats__row--win .opp-stats__label { color: var(--green); }
-.opp-stats__row--loss .opp-stats__label { color: var(--warm); }
-.opp-stats__row--draw .opp-stats__label { color: var(--fg-mute); }
+.opp-stats__cell--win {
+  border-left-color: color-mix(in srgb, var(--green) 70%, transparent);
+}
+.opp-stats__cell--win .opp-stats__label { color: var(--green); }
+.opp-stats__cell--loss {
+  border-left-color: color-mix(in srgb, var(--warm) 70%, transparent);
+}
+.opp-stats__cell--loss .opp-stats__label { color: var(--warm); }
+.opp-stats__cell--draw {
+  border-left-color: color-mix(in srgb, var(--fg-mute) 50%, transparent);
+}
+
+@media (max-width: 575px) {
+  .opp-stats__grid { grid-template-columns: repeat(2, 1fr); }
+}
 
 .quick-links { display: flex; flex-direction: column; gap: 0.4rem; }
 .quick-links a {
