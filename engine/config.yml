@@ -1,0 +1,74 @@
+# lichess-bot configuration for nick_p12_bot
+# https://github.com/lichess-bot-devs/lichess-bot
+#
+# The Lichess API token is supplied via env var LICHESS_BOT_TOKEN
+# (see start.sh).  Token must come from the BOT account, NOT the
+# personal nick_p12 account.
+
+token: ""  # filled at runtime from env
+
+url: "https://lichess.org/"
+
+engine:
+  dir: "/app/engine"
+  name: "maia_engine.py"
+  protocol: "uci"
+  ponder: false
+  # Run python on our adapter; lichess-bot will treat stdin/stdout as UCI.
+  command: "python /app/engine/maia_engine.py"
+  uci_options:
+    # Sane defaults; per-game OpponentElo is set by lichess-bot when the
+    # opponent's rating is known (we'll override in code if needed).
+    Temperature: "0.4"
+    TopK: 5
+
+abort_time: 20            # secs to wait before aborting a stuck game
+fake_think_time: false    # the model is fast enough; don't fake delays
+move_overhead: 1000       # ms safety buffer in our time mgmt
+
+correspondence:
+  checkin_period: 600
+  move_time: 60
+  disconnect_time: 300
+
+challenge:
+  # Concurrency
+  concurrency: 3
+  sort_by: "best"
+  preference: "human"     # accept humans before other bots
+  accept_bot: true        # bots-vs-bots provide useful rating data
+
+  # Time controls — match the training distribution (blitz + rapid only)
+  time_controls:
+    - blitz
+    - rapid
+  min_initial_seconds: 180   # 3+0 minimum
+  max_initial_seconds: 1800  # 30+0 maximum
+  min_increment: 0
+  max_increment: 60
+
+  # Variants — Maia2 is standard chess only
+  variants:
+    - standard
+
+  modes:
+    - rated
+    - casual
+
+  # Decline rules
+  decline_reasons:
+    - "tooFast"        # decline bullet < min_initial_seconds
+    - "tooSlow"        # decline classical > max_initial_seconds
+    - "variant"        # decline non-standard
+    - "ratingTooLow"   # decline anonymous / very low rated
+    - "noBot"          # decline if user has the no-bots flag
+  bot_min_rating: 1000   # avoid extreme rating mismatches
+
+# Engine-pondering off (we have no search anyway)
+versioning:
+  lichess_release: "auto"
+  bot_release: "v0.1.0"
+
+# Matchmaking: don't proactively challenge other bots; wait for incoming
+matchmaking:
+  allow_matchmaking: false
