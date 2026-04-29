@@ -15,13 +15,18 @@ Env vars:
   MAIA_CHECKPOINT_PATH    path to fine-tuned .pt (default: ./model/nick_p12.pt)
   MAIA_BOOK_DIR           dir containing white.bin / black.bin (default: ./book)
   MAIA_DEVICE             "cuda" or "cpu" (default: auto-detect)
-  MAIA_TEMPERATURE        softmax temperature for top-K sampling (default: 0.4)
-  MAIA_TOPK               sample from top K moves (default: 5)
+  MAIA_TEMPERATURE        softmax temperature for top-K sampling fallback
+                          when Stockfish unavailable (default: 0.4)
+  MAIA_TOPK               number of Maia top moves to consider (default: 5)
   MAIA_BOOK_MAX_PLIES     hard cap on book lookups (default: 30)
   MAIA_MIN_BOOK_WEIGHT    minimum max-entry weight to USE the book at a given
                           position (default: 15, ~10 games seen). Below this,
                           the position isn't really part of the repertoire and
                           we fall through to Maia2.
+  MAIA_STOCKFISH_PATH     path to stockfish binary (default: /usr/games/stockfish)
+  MAIA_STOCKFISH_DEPTH    depth for evaluating each Maia candidate (default: 10)
+  MAIA_STOCKFISH_DISABLE  set to "1" to disable Stockfish blending entirely
+                          (degrades to pure-Maia top-K sampling)
   MAIA_ELO_SELF           ELO bucket idx for the bot (default: 10 = >=2000)
   MAIA_ELO_OPPO           ELO bucket idx for opponent (default: 10; can override
                           per-game via UCI option)
@@ -35,6 +40,7 @@ import sys
 from pathlib import Path
 
 import chess
+import chess.engine
 import chess.polyglot
 import torch
 
@@ -60,6 +66,9 @@ TOPK = int(env("MAIA_TOPK", "5"))
 BOOK_MAX_PLIES = int(env("MAIA_BOOK_MAX_PLIES", "30"))
 MIN_BOOK_WEIGHT = int(env("MAIA_MIN_BOOK_WEIGHT", "15"))
 ELO_SELF = int(env("MAIA_ELO_SELF", "10"))
+STOCKFISH_PATH = env("MAIA_STOCKFISH_PATH", "/usr/games/stockfish")
+STOCKFISH_DEPTH = int(env("MAIA_STOCKFISH_DEPTH", "10"))
+STOCKFISH_DISABLE = env("MAIA_STOCKFISH_DISABLE", "0") == "1"
 ELO_OPPO_DEFAULT = int(env("MAIA_ELO_OPPO", "10"))
 
 
@@ -104,6 +113,28 @@ class MaiaEngine:
 
         self._book_white = self._open_book(Path(BOOK_DIR) / "white.bin")
         self._book_black = self._open_book(Path(BOOK_DIR) / "black.bin")
+
+        # Stockfish for ranking among Maia's top-K candidates.
+        # Strict mode: bot can only play moves Maia ranked in top-K, but
+        # picks the tactically best one of those (no blunder among style).
+        self._stockfish: chess.engine.SimpleEngine | None = None
+        if not STOCKFISH_DISABLE:
+            try:
+                self._stockfish = chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
+                self._stockfish.configure({"Threads": 1, "Hash": 32})
+                logger.info(
+                    "Stockfish loaded from %s (depth=%d) for top-%d candidate ranking",
+                    STOCKFISH_PATH,
+                    STOCKFISH_DEPTH,
+                    TOPK,
+                )
+            except Exception as e:  # noqa: BLE001
+                logger.warning(
+                    "Stockfish unavailable (%s); falling back to pure-Maia sampling", e
+                )
+                self._stockfish = None
+        else:
+            logger.info("Stockfish blending disabled via MAIA_STOCKFISH_DISABLE=1")
 
     @staticmethod
     def _open_book(path: Path):
@@ -260,29 +291,73 @@ class MaiaEngine:
         # Mask illegal moves to -inf so they cannot be sampled
         legal_idxs = [self._move_dict[m.uci()] for m in legal if m.uci() in self._move_dict]
         if not legal_idxs:
-            # Fallback: shouldn't happen since action space covers standard moves
             logger.warning("No legal move in action space; falling back to random legal")
             return random.choice(legal)
         mask = torch.full_like(logits, float("-inf"))
         mask[legal_idxs] = 0.0
         masked = logits + mask
 
-        # Take top-K
+        # Take Maia's top-K candidates
         k = min(TOPK, len(legal_idxs))
         top_vals, top_inds = torch.topk(masked, k)
-        # Apply temperature and sample
         probs = torch.softmax(top_vals / max(TEMPERATURE, 1e-3), dim=-1)
-        choice = torch.multinomial(probs, num_samples=1).item()
-        idx = top_inds[choice].item()
-        chosen_uci = self._inv_moves[idx]
-        chosen = chess.Move.from_uci(chosen_uci)
-        logger.info(
-            "ply=%d policy -> %s (top1 prob %.3f)",
-            self._board.ply(),
-            chosen.uci(),
-            probs[0].item(),
-        )
+        candidates: list[tuple[chess.Move, float]] = []  # (move, maia_prob)
+        for j in range(k):
+            uci = self._inv_moves[top_inds[j].item()]
+            candidates.append((chess.Move.from_uci(uci), float(probs[j].item())))
+
+        # Strict-style Stockfish ranking: pick the highest-evaluated move
+        # AMONG these candidates. Never plays a move outside Maia's top-K.
+        if self._stockfish is not None:
+            return self._stockfish_rank(candidates)
+
+        # Fallback: pure-Maia sampling (when Stockfish unavailable)
+        weights = [p for _, p in candidates]
+        chosen = random.choices([m for m, _ in candidates], weights=weights, k=1)[0]
+        logger.info("ply=%d policy[no-sf] -> %s", self._board.ply(), chosen.uci())
         return chosen
+
+    def _stockfish_rank(
+        self, candidates: list[tuple[chess.Move, float]]
+    ) -> chess.Move:
+        """Score each Maia candidate with Stockfish, return the best.
+
+        Strict mode: only candidates from Maia's top-K are considered. Never
+        introduces a move outside the user's style distribution.
+        """
+        my_color = self._board.turn
+        scored: list[tuple[float, chess.Move, float]] = []  # (sf_score, move, maia_p)
+        for mv, p in candidates:
+            self._board.push(mv)
+            try:
+                info = self._stockfish.analyse(
+                    self._board, chess.engine.Limit(depth=STOCKFISH_DEPTH)
+                )
+                pov = info["score"].pov(my_color)
+                # Convert PovScore to centipawns (mate = ±100k)
+                cp = pov.score(mate_score=100000)
+                if cp is None:
+                    cp = -100000  # treat unscoreable as worst
+            except Exception as e:  # noqa: BLE001
+                logger.warning("Stockfish eval failed on %s: %s", mv.uci(), e)
+                cp = -100000
+            self._board.pop()
+            scored.append((float(cp), mv, p))
+
+        # Pick the candidate with the best Stockfish eval; break ties by Maia prob.
+        scored.sort(key=lambda t: (-t[0], -t[2]))
+        best_cp, best_mv, best_p = scored[0]
+        worst_cp = scored[-1][0]
+        logger.info(
+            "ply=%d policy+sf -> %s (sf_cp=%+d, maia_p=%.3f, span=%dcp across top-%d)",
+            self._board.ply(),
+            best_mv.uci(),
+            int(best_cp),
+            best_p,
+            int(best_cp - worst_cp),
+            len(scored),
+        )
+        return best_mv
 
     @staticmethod
     def _elo_to_bucket(elo: int) -> int:
@@ -314,6 +389,11 @@ def main() -> int:
             elif line.startswith("go"):
                 engine.cmd_go(line)
             elif line == "quit":
+                if engine._stockfish is not None:
+                    try:
+                        engine._stockfish.quit()
+                    except Exception:  # noqa: BLE001
+                        pass
                 return 0
             elif line == "stop":
                 pass  # we don't do iterative search; nothing to stop

@@ -16,7 +16,7 @@ ENV PYTHONUNBUFFERED=1 \
 
 # System deps (git for cloning lichess-bot)
 RUN apt-get update \
- && apt-get install -y --no-install-recommends git ca-certificates \
+ && apt-get install -y --no-install-recommends git ca-certificates stockfish \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
