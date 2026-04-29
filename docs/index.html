@@ -247,6 +247,25 @@
       </div>
     </section>
 
+    <!-- ─── Known limitation ─── -->
+    <section class="mb-5">
+      <h2>Known limitation</h2>
+      <p>
+        Bots trained this way (supervised move prediction over a single player's
+        game history) still struggle in endgames. Once the board is reduced to a
+        few pieces, the opening book no longer applies, the policy network has
+        thin pattern coverage to draw from, and a shallow Stockfish lookup is
+        not enough to convert won positions or defend lost ones reliably.
+      </p>
+      <p>
+        Two reasonable paths forward: wire in a
+        <a href="https://syzygy-tables.info/" target="_blank" rel="noopener">Syzygy tablebase</a>
+        for positions with seven or fewer pieces, and replace the fixed-depth
+        Stockfish filter with a proper MCTS that uses Maia as the policy prior.
+        v2 territory.
+      </p>
+    </section>
+
   </div><!-- /.post -->
 </div><!-- /.container -->
 
