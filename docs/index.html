@@ -52,10 +52,10 @@
       </button>
       <div class="collapse navbar-collapse text-right" id="navbarNav">
         <ul class="navbar-nav ml-auto flex-nowrap">
-          <li class="nav-item"><a class="nav-link" href="https://nikhileshp.github.io/">about</a></li>
-          <li class="nav-item"><a class="nav-link" href="https://nikhileshp.github.io/blog/">blog</a></li>
-          <li class="nav-item"><a class="nav-link" href="https://nikhileshp.github.io/publications/">publications</a></li>
-          <li class="nav-item"><a class="nav-link" href="https://nikhileshp.github.io/teaching/">teaching</a></li>
+          <li class="nav-item"><a class="nav-link" href="/">about</a></li>
+          <li class="nav-item"><a class="nav-link" href="/blog/">blog</a></li>
+          <li class="nav-item"><a class="nav-link" href="/publications/">publications</a></li>
+          <li class="nav-item"><a class="nav-link" href="/teaching/">teaching</a></li>
           <li class="nav-item active"><a class="nav-link" href="/chess-clone/">nick_p12_bot<span class="sr-only">(current)</span></a></li>
           <li class="nav-item">
             <button id="theme-toggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode">
@@ -119,19 +119,9 @@
             <div class="rating-card__delta" id="deltaBlitz"></div>
           </div>
 
-          <div class="row no-gutters mt-3 small-stats">
-            <div class="col-6 pr-2">
-              <div class="rating-card rating-card--small">
-                <div class="rating-card__label">Rapid</div>
-                <div class="rating-card__value" id="ratingRapid">—</div>
-              </div>
-            </div>
-            <div class="col-6 pl-2">
-              <div class="rating-card rating-card--small">
-                <div class="rating-card__label">Games</div>
-                <div class="rating-card__value" id="totalGames">—</div>
-              </div>
-            </div>
+          <div class="rating-card rating-card--small mt-3">
+            <div class="rating-card__label">Games played</div>
+            <div class="rating-card__value" id="totalGames">—</div>
           </div>
 
           <div class="quick-links mt-3">
@@ -203,6 +193,29 @@
       </ol>
     </section>
 
+    <!-- ─── Time controls ─── -->
+    <section class="mb-5">
+      <h2>Accepted challenges</h2>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <h5>Rated</h5>
+          <p class="text-muted small mb-2">Strict — only these:</p>
+          <ul class="tc-list">
+            <li><span class="tc-name">3+0</span><span class="tc-tag">blitz</span></li>
+            <li><span class="tc-name">3+1</span><span class="tc-tag">blitz</span></li>
+            <li><span class="tc-name">3+2</span><span class="tc-tag">blitz</span></li>
+            <li><span class="tc-name">5+0</span><span class="tc-tag">blitz</span></li>
+            <li><span class="tc-name">5+1</span><span class="tc-tag">blitz</span></li>
+          </ul>
+        </div>
+        <div class="col-md-6 mb-3">
+          <h5>Casual</h5>
+          <p class="text-muted small mb-2">Any time control within the blitz range above. Bullet, rapid, classical, and variants are auto-declined — the model wasn't trained for them.</p>
+          <p class="text-muted small mb-0"><em>Why these limits?</em> The bot was fine-tuned on Nikhilesh's blitz games; longer time controls would let humans out-think it, shorter ones expose its lack of clock awareness.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- ─── How it works ─── -->
     <section class="mb-5">
       <h2>How it works</h2>
@@ -227,10 +240,14 @@
 
 <!-- ─── Footer ─── -->
 <footer class="fixed-bottom">
-  <div class="container mt-0">
-    &copy; Copyright 2026 Nikhilesh Prabhakar.
-    Source on <a href="https://github.com/nikhileshp/chess-clone" target="_blank" rel="noopener">GitHub</a>.
-    Container on <a href="https://huggingface.co/spaces/nikhileshp12/nick-p12-bot" target="_blank" rel="noopener">HuggingFace</a>.
+  <div class="container mt-0 footer-line">
+    <span class="footer-copy">&copy; Copyright 2026 Nikhilesh Prabhakar.</span>
+    <span class="footer-links">
+      <a href="https://lichess.org/@/nick_p12" target="_blank" rel="noopener" title="Nikhilesh on Lichess"><i class="fas fa-chess-king mr-1"></i>Lichess</a>
+      <a href="https://www.chess.com/member/nick_p12" target="_blank" rel="noopener" title="Nikhilesh on Chess.com"><i class="fas fa-chess-pawn mr-1"></i>Chess.com</a>
+      <a href="https://github.com/nikhileshp/chess-clone" target="_blank" rel="noopener"><i class="fab fa-github mr-1"></i>Source</a>
+      <a href="https://huggingface.co/spaces/nikhileshp12/nick-p12-bot" target="_blank" rel="noopener"><i class="fas fa-cube mr-1"></i>HuggingFace</a>
+    </span>
   </div>
 </footer>
 
