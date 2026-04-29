@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>nick_p12_bot — a chess clone of Nick</title>
+<meta name="description" content="A Maia2 model fine-tuned on 22,887 of nick_p12's blitz games. Plays his openings, his style, roughly his strength. Available 24/7 on Lichess.">
+<meta property="og:title" content="nick_p12_bot — a chess clone of Nick">
+<meta property="og:description" content="Caro-Kann diehard. 1.d4 only. Built from 22k blitz games.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%99%9E%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=Newsreader:opsz,ital,wght@6..72,0,300..700;6..72,1,300..700&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg class="grain" aria-hidden="true">
+  <filter id="n">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/>
+    <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.05 0"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#n)"/>
+</svg>
+
+<main>
+
+<header class="hero" data-reveal>
+  <div class="hero__masthead">
+    <span class="masthead__nameplate">No. 01 · Established 2026 · One copy</span>
+    <span class="masthead__live" id="liveStatusBadge"><span class="dot"></span>checking status…</span>
+  </div>
+  <h1 class="hero__title">
+    <span class="hero__line hero__line--lead">A clone of</span>
+    <span class="hero__line hero__line--name">Nick</span>
+    <span class="hero__line hero__line--sub">that plays chess<br>well enough to embarrass you.</span>
+  </h1>
+  <p class="hero__deck">
+    Twenty-two thousand of his blitz games, distilled into a neural network.
+    The result: Caro&#8209;Kann on every<span class="frac"><sup>5</sup>&frasl;<sub>10</sub></span> board, 1.d4 from the<br>
+    starting position with cult-like consistency, and a temperament that responds
+    poorly to suggestion. Now living on Lichess as <em>nick_p12_bot</em>, accepting all blitz challenges.
+  </p>
+
+  <div class="hero__cta">
+    <a class="btn btn--primary" href="https://lichess.org/?user=nick_p12_bot#friend" target="_blank" rel="noopener">
+      <span>Challenge me</span>
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+    <a class="btn btn--ghost" href="https://lichess.org/@/nick_p12_bot/tv" target="_blank" rel="noopener">
+      Watch a live game
+    </a>
+  </div>
+</header>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+
+<section class="vitals" data-reveal>
+  <div class="vitals__rule"></div>
+  <span class="section-num">02</span>
+  <h2 class="section-title">Vital statistics<span class="section-hint">live, refreshed every 30s</span></h2>
+
+  <div class="vitals__grid">
+    <article class="stat stat--lead">
+      <span class="stat__label">Lichess blitz</span>
+      <span class="stat__value" id="ratingBlitz">–</span>
+      <span class="stat__delta" id="deltaBlitz"></span>
+    </article>
+    <article class="stat">
+      <span class="stat__label">Rapid</span>
+      <span class="stat__value" id="ratingRapid">–</span>
+    </article>
+    <article class="stat">
+      <span class="stat__label">Games played</span>
+      <span class="stat__value" id="totalGames">–</span>
+    </article>
+    <article class="stat">
+      <span class="stat__label">Online</span>
+      <span class="stat__value" id="onlineStatus">–</span>
+    </article>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+
+<section class="about" data-reveal>
+  <span class="section-num">03</span>
+  <h2 class="section-title">Who is Nick</h2>
+
+  <div class="about__columns">
+    <div class="about__lead">
+      <p class="dropcap">
+        Born into chess in 2008, when Chess.com was still small enough that
+        Daniel Rensch hadn't yet registered. Nick beat him to it. The account
+        is older than Danny's. He keeps the screenshot.
+      </p>
+    </div>
+    <div class="about__body">
+      <p>
+        Magnus Carlsen, in a moment of plausible distraction, accepted a friend request.
+        That, too, has been preserved.
+      </p>
+      <p>
+        On the board: an obstinate <em>1.d4</em> player with white,
+        a <em>Caro&#8209;Kann</em> specialist with black,
+        and a long-standing project to dismantle the egos of overrated opponents.
+        Peak ratings hover around 2300 bullet, 2150 blitz, with an
+        appetite for closed positions and a deep prejudice against
+        gambits.
+      </p>
+      <p class="about__pullquote">
+        “Loves crushing stronger players' ego.”
+        <span class="cite">— self-described</span>
+      </p>
+      <p>
+        This bot is what happens when you take 22,887 of his
+        most considered moves, run them through a neural network,
+        bolt a tactical safety net to its policy head, and turn it loose
+        on the internet.
+      </p>
+      <ul class="about__links">
+        <li><a href="https://www.chess.com/member/nick_p12" target="_blank" rel="noopener">@nick_p12 on Chess.com</a></li>
+        <li><a href="https://lichess.org/@/nick_p12" target="_blank" rel="noopener">@nick_p12 on Lichess</a></li>
+        <li><a href="https://lichess.org/@/nick_p12_bot" target="_blank" rel="noopener">@nick_p12_bot — the bot</a></li>
+        <li><a href="https://github.com/nikhileshp/chess-clone" target="_blank" rel="noopener">github.com/nikhileshp/chess-clone</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+
+<section class="repertoire" data-reveal>
+  <span class="section-num">04</span>
+  <h2 class="section-title">The repertoire, in numbers<span class="section-hint">extracted from training data</span></h2>
+
+  <div class="repertoire__grid">
+    <div class="rep">
+      <h3 class="rep__heading">As white, opening move</h3>
+      <ol class="rep__bars">
+        <li><span class="rep__name">1.d4</span><span class="rep__bar" style="--w:97%"></span><span class="rep__count">~9,000 games</span></li>
+        <li><span class="rep__name">1.e4</span><span class="rep__bar" style="--w:7%"></span><span class="rep__count">~600</span></li>
+        <li><span class="rep__name">1.Nf3</span><span class="rep__bar" style="--w:1.5%"></span><span class="rep__count">20</span></li>
+        <li><span class="rep__name">1.c4</span><span class="rep__bar" style="--w:1.5%"></span><span class="rep__count">22</span></li>
+        <li><span class="rep__name">other</span><span class="rep__bar rep__bar--muted" style="--w:1%"></span><span class="rep__count">scattered</span></li>
+      </ol>
+    </div>
+    <div class="rep">
+      <h3 class="rep__heading">As black against 1.e4</h3>
+      <ol class="rep__bars">
+        <li><span class="rep__name">…c6 (Caro-Kann)</span><span class="rep__bar rep__bar--strong" style="--w:97%"></span><span class="rep__count">~3,100</span></li>
+        <li><span class="rep__name">…c5 (Sicilian)</span><span class="rep__bar" style="--w:42%"></span><span class="rep__count">~1,300</span></li>
+        <li><span class="rep__name">…d5 (Scandinavian)</span><span class="rep__bar" style="--w:18%"></span><span class="rep__count">~390</span></li>
+        <li><span class="rep__name">…e5</span><span class="rep__bar rep__bar--muted" style="--w:8%"></span><span class="rep__count">~170</span></li>
+        <li><span class="rep__name">other</span><span class="rep__bar rep__bar--muted" style="--w:3%"></span><span class="rep__count">marginal</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <p class="repertoire__caption">
+    Numbers reflect actual game frequencies in the training set.
+    The bot samples its first move from this distribution — meaning, statistically,
+    if you sit down for ten games against it, you will reach a Caro&#8209;Kann
+    mainline at least five times. Plan accordingly.
+  </p>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+
+<section class="recent" data-reveal>
+  <span class="section-num">05</span>
+  <h2 class="section-title">Recent games<span class="section-hint">last five, live from Lichess</span></h2>
+  <ol class="recent__list" id="recentList">
+    <li class="recent__loading">Fetching…</li>
+  </ol>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+
+<section class="how" data-reveal>
+  <span class="section-num">06</span>
+  <h2 class="section-title">How it works (briefly)</h2>
+  <div class="how__grid">
+    <div class="how__step">
+      <span class="how__num">1</span>
+      <h4>Opening book</h4>
+      <p>A 100,000-position book built from Nick's actual games. Frequency-gated, so only positions he reached in 10+ games are answered from book. Goes 30 plies deep into mainlines.</p>
+    </div>
+    <div class="how__step">
+      <span class="how__num">2</span>
+      <h4>Maia2 policy</h4>
+      <p>A 23M-parameter neural network fine-tuned on his moves. Top-1 move-prediction accuracy: 47% (up from 25% on the unmodified model). The personalisation signal is real.</p>
+    </div>
+    <div class="how__step">
+      <span class="how__num">3</span>
+      <h4>Stockfish referee</h4>
+      <p>Maia proposes its top five candidate moves — already in Nick's distribution — and Stockfish at depth 10 picks the tactically soundest of those five. Style preserved, blunders curtailed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+
+<footer class="foot" data-reveal>
+  <div class="foot__rule"></div>
+  <p class="foot__line">
+    <span>Built by Nikhilesh.</span>
+    <span>Source: <a href="https://github.com/nikhileshp/chess-clone" target="_blank" rel="noopener">github.com/nikhileshp/chess-clone</a></span>
+    <span>Container: <a href="https://huggingface.co/spaces/nikhileshp12/nick-p12-bot" target="_blank" rel="noopener">HuggingFace Space</a></span>
+  </p>
+  <p class="foot__pawn" aria-hidden="true">♞</p>
+</footer>
+
+</main>
+
+<script src="lichess.js" defer></script>
+</body>
+</html>
