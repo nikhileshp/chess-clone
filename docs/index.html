@@ -263,17 +263,21 @@
     <section class="mb-5">
       <h2>How it works</h2>
       <div class="row">
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
           <h5><span class="step-num">1</span> Opening book</h5>
           <p class="text-muted">A 100,000-position book built from his games. Frequency-gated; positions reached in fewer than 10 games are skipped. Goes 30 plies deep in mainlines.</p>
         </div>
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
           <h5><span class="step-num">2</span> Maia2 policy</h5>
           <p class="text-muted">A 23M-parameter neural network fine-tuned on his moves. Top-1 move-prediction accuracy is 47%, up from 25% on the base Maia2.</p>
         </div>
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
           <h5><span class="step-num">3</span> Stockfish referee</h5>
-          <p class="text-muted">Maia proposes its top 5 candidates, all already in his distribution. Stockfish at depth 10 picks the tactically soundest of those. The style stays intact and blunders become rare.</p>
+          <p class="text-muted">Maia proposes its top 5 candidates, all already in his distribution. Stockfish evaluates each at adaptive depth 6&ndash;10, then a Maia-dominant softmax samples among them. Style intact, tactical blunders filtered.</p>
+        </div>
+        <div class="col-md-3 mb-3">
+          <h5><span class="step-num">4</span> Plays at human pace</h5>
+          <p class="text-muted">A LightGBM quantile-regression model trained on his PGN clock data predicts how long he&rsquo;d think on each position. The bot samples from that distribution and actually consumes that wall-clock time &mdash; recaptures blitzed, sharp positions get longer thinks. Calibrated to within 0.5pp on held-out games.</p>
         </div>
       </div>
     </section>
