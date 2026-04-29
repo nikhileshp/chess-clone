@@ -83,38 +83,62 @@ h5 { font-weight: 500; font-size: 1.1rem; margin-bottom: 0.7rem; }
 a { color: var(--accent); text-decoration: none; transition: color 150ms ease; }
 a:hover { color: color-mix(in srgb, var(--accent) 70%, var(--fg)); text-decoration: underline; }
 
-/* ─── Navbar (mirrors al-folio _sass/_base.scss) ─── */
-.navbar {
-  box-shadow: none !important;
+/* ─── Navbar (matches the user's _sass/_chess_style.scss on the main site
+       so the bot page and the rest of the site look identical) ─── */
+.navbar.navbar-light {
+  background: color-mix(in srgb, var(--bg) 94%, transparent) !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--rule);
-  background-color: var(--bg) !important;
-  opacity: 0.95;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  opacity: 1;
 }
-.navbar-brand.social { display: flex; gap: 0.6rem; }
-.navbar-brand.social a { color: var(--fg); font-size: 1.1rem; padding: 0.2rem 0.4rem; transition: color 0.2s ease-in-out; }
-.navbar-brand.social a:hover { color: var(--accent); }
+:root[data-theme='dark'] .navbar.navbar-light {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.navbar.navbar-light .navbar-brand.social {
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  gap: 0.6rem;
+  font-size: 1rem;
+}
+.navbar.navbar-light .navbar-brand.social a {
+  font-size: 1.1rem;
+  padding: 0.2rem 0.4rem;
+  color: var(--fg-soft);
+  transition: color 150ms ease;
+}
+.navbar.navbar-light .navbar-brand.social a:hover { color: var(--accent); }
+.navbar.navbar-light .navbar-brand.social a i::before {
+  color: var(--fg-soft);
+  transition: color 150ms ease;
+}
+.navbar.navbar-light .navbar-brand.social a:hover i::before { color: var(--accent); }
+
 .navbar.navbar-light .navbar-nav .nav-item .nav-link {
-  color: var(--fg);
-  background-color: transparent !important;
-  box-shadow: none !important;
+  font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: var(--fg-soft);
+  padding: 0.5rem 0.85rem;
+  background-color: transparent;
+  box-shadow: none;
+  transition: color 150ms ease;
 }
 .navbar.navbar-light .navbar-nav .nav-item .nav-link:hover {
   color: var(--accent);
-  background-color: transparent !important;
+  background-color: transparent;
 }
-.navbar.navbar-light .navbar-nav .nav-item.active > .nav-link,
-.navbar.navbar-light .navbar-nav .nav-item.active .nav-link {
-  background-color: inherit !important;
-  background: transparent !important;
-  font-weight: bolder;
+.navbar.navbar-light .navbar-nav .nav-item.active > .nav-link {
   color: var(--accent);
-  box-shadow: none !important;
+  font-weight: 500;
+  background-color: inherit;
 }
 .navbar.navbar-light .navbar-nav .nav-item.active > .nav-link:hover {
   color: var(--accent);
-  background-color: transparent !important;
 }
 
 /* ─── Page header / post title ─── */
