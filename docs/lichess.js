@@ -69,7 +69,7 @@ async function updateUserData() {
 
     const badge = $("liveStatusBadge");
     badge.dataset.state = u?.online ? "online" : "offline";
-    badge.querySelector(".lbl").textContent = u?.online ? "accepting challenges" : "asleep — wakes on first challenge";
+    badge.querySelector(".lbl").textContent = u?.online ? "accepting challenges" : "asleep, wakes on first challenge";
   } catch (e) {
     console.warn("user fetch failed", e);
     const badge = $("liveStatusBadge");
@@ -214,7 +214,7 @@ async function updateRecentGames() {
   try {
     const games = await fetchNDJSON(API_GAMES);
     if (!games.length) {
-      list.innerHTML = '<li class="recent-loading">No games yet — be the first to challenge.</li>';
+      list.innerHTML = '<li class="recent-loading">No games yet. Be the first to challenge.</li>';
       return;
     }
     list.innerHTML = games.map((g) => {

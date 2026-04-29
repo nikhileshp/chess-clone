@@ -80,9 +80,9 @@
       </h1>
       <p class="post-description">
         A Maia2 chess bot fine-tuned on <strong>22,887</strong> of Nikhilesh's blitz games.
-        Plays his openings — <em>Queen's Gambit Declined</em> and <em>Open Catalan</em>-like positions
-        as white, the <em>Caro-Kann</em> as black — filters picks through Stockfish for tactical sanity,
-        and lives on Lichess 24/7.
+        As white it plays <em>Queen's Gambit Declined</em> and <em>Open Catalan</em>-like positions.
+        As black it plays the <em>Caro-Kann</em>. Stockfish picks the move from a shortlist
+        the network proposes, so the tactics don't collapse.
       </p>
     </header>
 
@@ -101,7 +101,7 @@
                   <span>♟</span><span>♞</span><span>♝</span><span>♜</span><span>♛</span><span>♚</span>
                 </div>
                 <h4>No games yet</h4>
-                <p>Be the first to challenge — the embedded board will pick up your game in real time.</p>
+                <p>Be the first to challenge. The embedded board will pick up your game in real time.</p>
               </div>
             </div>
           </div>
@@ -143,17 +143,16 @@
       </p>
       <p>
         As white, the bot heads for <strong>Queen's Gambit Declined</strong>
-        and <strong>Open Catalan</strong>-like positions — a markedly different
-        approach from his gambit-heavy teenage self. He still loves aggression;
-        the openings now just channel it through slowly outplaying the opponent
-        rather than blowing the position open on move six. Against 1.e4 as black,
-        the <strong>Caro-Kann</strong> is non-negotiable.
+        and <strong>Open Catalan</strong>-like positions. That's a different style
+        from his gambit-heavy teenage self. He still likes aggression. The openings
+        just funnel it into slowly outplaying the opponent instead of blowing the
+        position open on move six. Against 1.e4 as black, the <strong>Caro-Kann</strong>
+        is the answer roughly all of the time.
       </p>
       <p>
-        The bot is not as creative as he is. But it has absorbed enough of his
-        repertoire to play his openings with stubborn consistency, and a
-        Stockfish referee keeps the tactics from going off the rails.
-        For the rest of his chess history, see the
+        The bot is less creative than he is. But it has absorbed enough of his
+        repertoire to play his openings consistently, and Stockfish keeps the
+        tactics from collapsing. For the rest of his chess history, see the
         <a href="https://nikhileshp.github.io/" target="_blank" rel="noopener">interests page</a>
         of his main site.
       </p>
@@ -162,7 +161,7 @@
     <!-- ─── Repertoire ─── -->
     <section class="mb-5">
       <h2>Repertoire by frequency</h2>
-      <p class="text-muted small mb-4">Extracted directly from training data — these are the actual move-frequency distributions the bot inherits.</p>
+      <p class="text-muted small mb-4">Extracted directly from training data. These are the actual move-frequency distributions the bot inherits.</p>
       <div class="row">
         <div class="col-md-6 mb-4">
           <h5>As white</h5>
@@ -198,7 +197,7 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <h5>Rated</h5>
-          <p class="text-muted small mb-2">Strict — only these:</p>
+          <p class="text-muted small mb-2">Strict. Only these:</p>
           <ul class="tc-list">
             <li><span class="tc-name">3+0</span><span class="tc-tag">blitz</span></li>
             <li><span class="tc-name">3+1</span><span class="tc-tag">blitz</span></li>
@@ -209,7 +208,7 @@
         </div>
         <div class="col-md-6 mb-3">
           <h5>Casual</h5>
-          <p class="text-muted small mb-2">Any time control within the blitz range above. Bullet, rapid, classical, and variants are auto-declined — the model wasn't trained for them.</p>
+          <p class="text-muted small mb-2">Any time control within the blitz range above. Bullet, rapid, classical, and variants are auto-declined since the model wasn't trained for them.</p>
           <p class="text-muted small mb-0"><em>Why these limits?</em> The bot was fine-tuned on Nikhilesh's blitz games; longer time controls would let humans out-think it, shorter ones expose its lack of clock awareness.</p>
         </div>
       </div>
@@ -221,15 +220,15 @@
       <div class="row">
         <div class="col-md-4 mb-3">
           <h5><span class="step-num">1</span> Opening book</h5>
-          <p class="text-muted">A 100,000-position book built from my actual games. Frequency-gated; only positions reached in 10+ games are answered from book. Goes 30 plies deep into mainlines.</p>
+          <p class="text-muted">A 100,000-position book built from his games. Frequency-gated; positions reached in fewer than 10 games are skipped. Goes 30 plies deep in mainlines.</p>
         </div>
         <div class="col-md-4 mb-3">
           <h5><span class="step-num">2</span> Maia2 policy</h5>
-          <p class="text-muted">A 23M-parameter neural network fine-tuned on my moves. Top-1 move-prediction accuracy: 47% (up from 25% on base Maia2). The personalization signal is real.</p>
+          <p class="text-muted">A 23M-parameter neural network fine-tuned on his moves. Top-1 move-prediction accuracy is 47%, up from 25% on the base Maia2.</p>
         </div>
         <div class="col-md-4 mb-3">
           <h5><span class="step-num">3</span> Stockfish referee</h5>
-          <p class="text-muted">Maia proposes its top 5 candidates — already in my distribution — and Stockfish at depth 10 picks the tactically soundest. Style preserved, blunders curtailed.</p>
+          <p class="text-muted">Maia proposes its top 5 candidates, all already in his distribution. Stockfish at depth 10 picks the tactically soundest of those. The style stays intact and blunders become rare.</p>
         </div>
       </div>
     </section>
