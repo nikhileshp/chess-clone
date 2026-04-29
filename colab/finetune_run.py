@@ -12,9 +12,14 @@ This avoids the "notebook on disk vs browser cache" confusion entirely.
 """
 import io
 import json
+import os
 import random
 import time
 from pathlib import Path
+
+# Force synchronous CUDA so any future error points at the real line,
+# not somewhere later in the call graph (async kernel reporting).
+os.environ.setdefault("CUDA_LAUNCH_BLOCKING", "1")
 
 import chess
 import chess.pgn
@@ -121,6 +126,22 @@ print("Parsing PGN...")
 _t0 = time.time()
 _samples, _n_games = parse_pgn_zst(cfg.pgn_zst_path)
 print(f"  {_n_games} games | {len(_samples)} user-move samples | {time.time()-_t0:.1f}s")
+
+# Sanity: confirm bucket values are actually in [0, num_buckets-1]
+_es_vals = [s[2] for s in _samples]
+_eo_vals = [s[3] for s in _samples]
+_min_es, _max_es = min(_es_vals), max(_es_vals)
+_min_eo, _max_eo = min(_eo_vals), max(_eo_vals)
+print(f"  elo_self bucket range: [{_min_es}, {_max_es}]")
+print(f"  elo_oppo bucket range: [{_min_eo}, {_max_eo}]")
+assert 0 <= _min_es and _max_es < _n_buckets, f"elo_self out of bounds! got {_min_es}..{_max_es}"
+assert 0 <= _min_eo and _max_eo < _n_buckets, f"elo_oppo out of bounds! got {_min_eo}..{_max_eo}"
+
+# Reload model to clear any poisoned CUDA state from previous runs
+from maia2 import model as _model_mod  # noqa: E402
+print("Reloading model to clear any poisoned CUDA context...")
+m = _model_mod.from_pretrained(type=cfg.pretrained_type, device="gpu")
+torch.cuda.synchronize()
 
 
 class UserMoveDataset(Dataset):
