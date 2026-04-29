@@ -227,8 +227,6 @@ a:hover { color: color-mix(in srgb, var(--accent) 70%, var(--fg)); text-decorati
 
 /* ─── Sidebar (challenge cta + stats) ─── */
 .challenge-cta {
-  background: var(--accent);
-  border-color: var(--accent);
   font-family: "Roboto Slab", serif;
   font-weight: 400;
   padding: 0.95rem 1rem;
@@ -236,17 +234,49 @@ a:hover { color: color-mix(in srgb, var(--accent) 70%, var(--fg)); text-decorati
   border-radius: 4px;
   letter-spacing: 0.005em;
   transition: background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+.challenge-cta.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
   box-shadow: 0 1px 0 0 rgba(0,0,0,0.04), 0 8px 18px -10px color-mix(in srgb, var(--accent) 55%, transparent);
 }
-.challenge-cta {
-  color: var(--on-accent);
-}
-.challenge-cta:hover, .challenge-cta:focus {
+.challenge-cta.btn-primary:hover, .challenge-cta.btn-primary:focus {
   background: color-mix(in srgb, var(--accent) 85%, var(--fg));
   border-color: color-mix(in srgb, var(--accent) 85%, var(--fg));
   color: var(--on-accent);
   transform: translateY(-1px);
   box-shadow: 0 1px 0 0 rgba(0,0,0,0.06), 0 12px 24px -10px color-mix(in srgb, var(--accent) 65%, transparent);
+}
+.challenge-cta.btn-outline-primary {
+  background: transparent;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.challenge-cta.btn-outline-primary:hover, .challenge-cta.btn-outline-primary:focus {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.cta-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--fg-mute);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0.85rem 0;
+}
+.cta-divider::before, .cta-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid var(--rule);
+}
+.cta-divider span {
+  padding: 0 0.6rem;
 }
 
 .rating-card {
