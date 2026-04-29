@@ -39,7 +39,7 @@ Locally:
 
 ```bash
 pip install huggingface_hub
-huggingface-cli login   # paste a write-scope token from huggingface.co/settings/tokens
+hf auth login   # paste a write-scope token from huggingface.co/settings/tokens
 
 # from your downloaded file location:
 python /home/nick/Projects/chess_clone/engine/upload_model.py \

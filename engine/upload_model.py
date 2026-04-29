@@ -7,8 +7,8 @@ Usage:
         --repo nikhileshp12/nick-p12-bot
 
 Requires `huggingface_hub` and a token with write scope (one-time setup):
-    pip install huggingface_hub
-    huggingface-cli login   # paste an access token from huggingface.co/settings/tokens
+    uv add huggingface_hub
+    uv run hf auth login   # paste an access token from huggingface.co/settings/tokens
 """
 from __future__ import annotations
 
