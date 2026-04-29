@@ -28,14 +28,19 @@ class FineTuneConfig:
     pgn_zst_path: str = "/content/repo/data/clean/all.pgn.zst"
     output_dir: str = "/content/repo/colab_outputs"
     pretrained_type: str = "blitz"  # or "rapid"
-    epochs: int = 3
-    learning_rate: float = 1e-5  # 100x lower than typical pretraining
+    epochs: int = 5  # bumped from 3
+    learning_rate: float = 1e-5
     batch_size: int = 256
     val_fraction: float = 0.05
     seed: int = 42
     freeze_encoder: bool = False
     weight_decay: float = 1e-4
     warmup_steps: int = 200
+    # If non-empty, load this checkpoint into the model before fine-tuning,
+    # rather than starting fresh from the pretrained Maia2 weights.
+    resume_from: str = ""
+    # Anneal LR from `learning_rate` down to learning_rate*0.05 over training.
+    use_cosine_decay: bool = True
 
 
 def set_seed(seed: int = 42) -> None:

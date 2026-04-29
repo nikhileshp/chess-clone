@@ -147,6 +147,15 @@ print("Reloading model to clear any poisoned CUDA context...")
 m = _model_mod.from_pretrained(type=cfg.pretrained_type, device="gpu")
 torch.cuda.synchronize()
 
+# Optional resume: load a previously-saved fine-tuned checkpoint to continue training.
+_resume = getattr(cfg, "resume_from", "") or ""
+if _resume and Path(_resume).exists():
+    print(f"Resuming from checkpoint: {_resume}")
+    _ck = torch.load(_resume, map_location=device, weights_only=False)
+    m.load_state_dict(_ck["state_dict"])
+    print(f"  prior best val top-1: {_ck.get('val_top1', '?')}")
+    print(f"  prior baseline top-1: {_ck.get('baseline_top1', '?')}")
+
 
 class UserMoveDataset(Dataset):
     def __init__(self, rows):
@@ -186,7 +195,22 @@ val_dl = DataLoader(
 
 m.train()
 opt = torch.optim.AdamW(m.parameters(), lr=cfg.learning_rate, weight_decay=cfg.weight_decay)
-sched = torch.optim.lr_scheduler.LinearLR(opt, start_factor=0.01, total_iters=cfg.warmup_steps)
+
+# Schedule: linear warmup, then either flat or cosine decay to 5% of base LR.
+_steps_per_epoch = max(1, len(train_dl))
+_total_steps = cfg.epochs * _steps_per_epoch
+_warmup = torch.optim.lr_scheduler.LinearLR(opt, start_factor=0.01, total_iters=cfg.warmup_steps)
+if getattr(cfg, "use_cosine_decay", True):
+    _cosine = torch.optim.lr_scheduler.CosineAnnealingLR(
+        opt, T_max=max(1, _total_steps - cfg.warmup_steps), eta_min=cfg.learning_rate * 0.05
+    )
+    sched = torch.optim.lr_scheduler.SequentialLR(
+        opt, schedulers=[_warmup, _cosine], milestones=[cfg.warmup_steps]
+    )
+    print(f"LR schedule: warmup {cfg.warmup_steps} steps -> cosine to {cfg.learning_rate*0.05:.2e} over {_total_steps} total steps")
+else:
+    sched = _warmup
+    print(f"LR schedule: warmup {cfg.warmup_steps} steps then flat {cfg.learning_rate:.2e}")
 
 
 def run_eval(loader, label):
