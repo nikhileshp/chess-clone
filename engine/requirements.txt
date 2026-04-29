@@ -1,5 +1,6 @@
 # Engine + lichess-bot deps
 torch==2.4.0
+numpy>=1.26,<2.2
 maia2
 chess>=1.11
 pyzstd
