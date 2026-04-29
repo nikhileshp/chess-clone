@@ -12,6 +12,11 @@ echo "=== nick_p12_bot starting at $(date -Iseconds) ==="
 : "${LICHESS_BOT_TOKEN:?LICHESS_BOT_TOKEN env var must be set (Lichess BOT account token)}"
 : "${MAIA_HF_REPO:?MAIA_HF_REPO env var must be set, e.g. nikhileshp12/nick-p12-bot}"
 
+# Engine resolves these as relative paths by default. lichess-bot cd's into
+# its own dir before spawning us, so we must hard-pin absolute paths here.
+export MAIA_CHECKPOINT_PATH=/app/model/nick_p12.pt
+export MAIA_BOOK_DIR=/app/engine/book
+
 # --- Pull the fine-tuned checkpoint ---
 echo "Pulling checkpoint from huggingface://${MAIA_HF_REPO}..."
 python /app/pull_model.py
