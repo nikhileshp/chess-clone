@@ -67,11 +67,15 @@ def parse_pgn_zst(path: str, max_games: int | None = None):
         text = fz.read().decode("utf-8", errors="replace")
     buf = io.StringIO(text)
     n_games = 0
+    pbar = tqdm(desc="parsing games", unit="g")
     while True:
         game = chess.pgn.read_game(buf)
         if game is None:
             break
         n_games += 1
+        pbar.update(1)
+        if n_games % 500 == 0:
+            pbar.set_postfix(samples=len(samples))
         if max_games and n_games > max_games:
             break
         h = game.headers
@@ -109,6 +113,7 @@ def parse_pgn_zst(path: str, max_games: int | None = None):
                         (board.fen(), uci, elo_to_bucket(elo_self), elo_to_bucket(elo_oppo), aw)
                     )
             board.push(move)
+    pbar.close()
     return samples, n_games
 
 
@@ -163,7 +168,7 @@ def run_eval(loader, label):
     m.eval()
     correct1, correct3, total = 0, 0, 0
     with torch.no_grad():
-        for x, y, es, eo, _ in loader:
+        for x, y, es, eo, _ in tqdm(loader, desc=f"eval {label}", leave=False):
             x = x.to(device)
             y = y.to(device)
             es = es.to(device)
@@ -190,7 +195,8 @@ for epoch in range(cfg.epochs):
     print(f"\n=== Epoch {epoch+1}/{cfg.epochs} ===")
     _t0 = time.time()
     running, steps = 0.0, 0
-    for x, y, es, eo, _ in tqdm(train_dl, desc=f"epoch {epoch+1}"):
+    pbar = tqdm(train_dl, desc=f"epoch {epoch+1}")
+    for x, y, es, eo, _ in pbar:
         x = x.to(device, non_blocking=True)
         y = y.to(device, non_blocking=True)
         es = es.to(device, non_blocking=True)
@@ -204,6 +210,8 @@ for epoch in range(cfg.epochs):
         sched.step()
         running += loss.item()
         steps += 1
+        if steps % 20 == 0:
+            pbar.set_postfix(loss=f"{running/steps:.4f}", lr=f"{sched.get_last_lr()[0]:.2e}")
     train_loss = running / max(steps, 1)
     val_top1 = run_eval(val_dl, "val")
     metrics["epochs"].append(
