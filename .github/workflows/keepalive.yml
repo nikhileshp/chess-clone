@@ -1,0 +1,31 @@
+name: keepalive-hf-space
+
+# Keeps the nick_p12_bot HF Space awake by pinging /health every 5 minutes.
+# Free cpu-basic Spaces auto-sleep on inbound-HTTP idle; lichess-bot's outbound
+# polling alone doesn't count as activity, so without this the bot disconnects
+# from Lichess after ~48h.
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: keepalive-hf-space
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Ping HF Space /health
+        run: |
+          set -euo pipefail
+          URL="https://nikhileshp12-nick-p12-bot.hf.space/health"
+          # 60s connect/read timeout — cold starts can take 20–40s.
+          code=$(curl -sS -o /tmp/body -w "%{http_code}" --max-time 60 --retry 2 --retry-delay 10 "$URL" || echo "000")
+          echo "HTTP $code"
+          head -c 500 /tmp/body || true
+          echo
+          [ "$code" = "200" ]
